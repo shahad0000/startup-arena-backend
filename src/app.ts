@@ -10,6 +10,7 @@ import { dev, port } from "./utils/helpers";
 import { OK, INTERNAL_SERVER_ERROR } from "./utils/http-status";
 import { connectDB, deleteAllCollections } from "./config/db";
 import { AppError } from "./utils/error";
+import authRoutes from "./routes/auth.routes";
 
 // // Delete all collections
 // deleteAllCollections();
@@ -21,6 +22,7 @@ const app: Express = express();
 
 const allowedOrigins = [
   "http://localhost:5173",
+  "http://localhost:3000",
   "frontend link goes here",
 ];
 
@@ -38,19 +40,19 @@ app.use(
   })
 );
 
+// Adds security-related HTTP headers using Helmet
 app.use(helmet());
-app.use(
-  morgan("tiny", {
-    stream: {
-      write: (message) => logger.info(message.trim()),
-    },
-  })
-);
+// Logs HTTP requests, routing them through the custom logger
+app.use(morgan("tiny", { stream: { write: (message) => logger.info(message.trim())}}));
+// Parses incoming JSON payloads
 app.use(express.json());
+// Parses URL-encoded data
 app.use(express.urlencoded({ extended: true }));
+// Parses cookies attached to client requests
 app.use(cookieParser());
 
 // Routes
+app.use("/auth", authRoutes);
 
 // Basic route
 app.get("/", (req: Request, res: Response) => {
@@ -58,15 +60,13 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 // Error handling middleware
-app.use(
-  (
-    err: Error | AppError,
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): void => {
+// Starts an Express error-handling middleware. It catches all errors passed via next(err)
+app.use((err: Error | AppError, req: Request, res: Response, next: NextFunction): void => {
+
+    // Logs the error message
     logger.error("Error:", err.message);
 
+    // If it's a known AppError, return structured error response with optional stack trace in dev mode
     if (err instanceof AppError) {
       res.status(err.statusCode).json({
         status: err.status,
@@ -76,11 +76,16 @@ app.use(
       return;
     }
 
+    // print unknown errors
+    console.log(err)
+
+    // For unknown errors, return a generic 500 error, with stack trace if in dev mode
     res.status(INTERNAL_SERVER_ERROR).json({
       status: "error",
       message: "Something went wrong!",
       ...(dev && { error: err.message, stack: err.stack }),
     });
+    
   }
 );
 
