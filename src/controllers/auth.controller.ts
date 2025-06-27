@@ -10,14 +10,17 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
   try {
     
     // Destructures user input from request body
-    const { name, email, password, role } = req.body;
-
+    const { name, email, password, role, age, gender, country, city } = req.body;
     // Calls the signUp service function to register the user and receive tokens
     const { user, accessToken, refreshToken } = await AuthService.signUp({
       name,
       email,
       password,
-      role
+      role,
+      age,
+      gender,
+      country,
+      city
     });
 
     // Set cookies
@@ -44,6 +47,10 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
           name: user.name,
           email: user.email,
           role: user.role,
+          age: user.age,
+          gender: user.gender,
+          country: user.country,
+          city: user.city,
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
         },
@@ -91,6 +98,10 @@ const signIn = async (req: Request, res: Response, next: NextFunction) => {
           name: user.name,
           email: user.email,
           role: user.role,
+          age: user.age,
+          gender: user.gender,
+          country: user.country,
+          city: user.city,
           createdAt: user.createdAt,
           updatedAt: user.updatedAt,
         },

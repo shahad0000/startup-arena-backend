@@ -11,6 +11,10 @@ const signUp = async (userData: {
   email: string;
   password: string;
   role: string;
+  age: Number;
+  gender: string;
+  country: string;
+  city: string;
 }): Promise<{
   user: UserDocument;
   accessToken: string;

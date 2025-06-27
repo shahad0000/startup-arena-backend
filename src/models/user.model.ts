@@ -8,11 +8,15 @@ import bcrypt from "bcryptjs";
 // Includes role with valid values to control access
 // id is used in the transform function (not _id directly)
 
-export interface UserDocument extends Document {
+export interface UserDocument extends Document { 
   id: string;
   name: string;
   email: string;
   password: string;
+  gender: string;
+  age: Number;
+  country: string;
+  city: string;
   role: "critic" | "founder" | "investor";
   createdAt: Date;
   updatedAt: Date;
@@ -41,6 +45,18 @@ const userSchema = new Schema<UserDocument>(
       required: true,
       minlength: 8,
     },
+    gender: {
+      type: String,
+    },
+    age: {
+      type: Number,
+    },
+    country: {
+      type: String,
+    },
+    city: {
+      type: String,
+    },
     // Restricts role values to four predefined ones
     role: {
       type: String,
@@ -64,6 +80,10 @@ const userSchema = new Schema<UserDocument>(
           name: ret.name,
           email: ret.email,
           role: ret.role,
+          age: ret.age,
+          gender: ret.gender,
+          country: ret.country,
+          city: ret.city,
           createdAt: ret.createdAt,
           updatedAt: ret.updatedAt,
         };
