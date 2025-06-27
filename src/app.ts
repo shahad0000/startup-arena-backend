@@ -11,6 +11,7 @@ import { OK, INTERNAL_SERVER_ERROR } from "./utils/http-status";
 import { connectDB, deleteAllCollections } from "./config/db";
 import { AppError } from "./utils/error";
 import authRoutes from "./routes/auth.routes";
+import ideasRoutes from "./routes/ideas.routes";
 
 // // Delete all collections
 // deleteAllCollections();
@@ -52,7 +53,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Routes
-app.use("/auth", authRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/ideas", ideasRoutes);
 
 // Basic route
 app.get("/", (req: Request, res: Response) => {
