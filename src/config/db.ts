@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import logger from '../utils/logger.js';
+import logger from '../utils/logger';
 
-export const connectDB = async () => {
+export const connectDB = async (): Promise<void> => {
   try {
     const mongoURI = process.env.MONGODB_URI;
     if (!mongoURI) {
@@ -16,20 +16,14 @@ export const connectDB = async () => {
   }
 };
 
-export const deleteAllCollections = async () => {
+export const deleteAllCollections = async (): Promise<void> => {
   const collections = mongoose.connection.collections;
   if (!collections) {
     logger.error('No collections found');
     return;
   }
   for (const collection of Object.values(collections)) {
-    try {
-      await collection.drop();
-    } catch (err) {
-      if (err.message !== 'ns not found') {
-        logger.error(`Error dropping collection ${collection.name}:`, err);
-      }
-    }
+    await collection.drop();
   }
   logger.info('All collections dropped');
 };
