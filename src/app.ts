@@ -12,6 +12,7 @@ import { connectDB, deleteAllCollections } from "./config/db";
 import { AppError } from "./utils/error";
 import authRoutes from "./routes/auth.routes";
 import ideasRoutes from "./routes/ideas.routes";
+import usersRoutes from "./routes/users.routes";
 
 // // Delete all collections
 // deleteAllCollections();
@@ -44,7 +45,11 @@ app.use(
 // Adds security-related HTTP headers using Helmet
 app.use(helmet());
 // Logs HTTP requests, routing them through the custom logger
-app.use(morgan("tiny", { stream: { write: (message) => logger.info(message.trim())}}));
+app.use(
+  morgan("tiny", {
+    stream: { write: (message) => logger.info(message.trim()) },
+  })
+);
 // Parses incoming JSON payloads
 app.use(express.json());
 // Parses URL-encoded data
@@ -55,6 +60,7 @@ app.use(cookieParser());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/ideas", ideasRoutes);
+app.use("/api/users", usersRoutes);
 
 // Basic route
 app.get("/", (req: Request, res: Response) => {
@@ -63,8 +69,13 @@ app.get("/", (req: Request, res: Response) => {
 
 // Error handling middleware
 // Starts an Express error-handling middleware. It catches all errors passed via next(err)
-app.use((err: Error | AppError, req: Request, res: Response, next: NextFunction): void => {
-
+app.use(
+  (
+    err: Error | AppError,
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): void => {
     // Logs the error message
     logger.error("Error:", err.message);
 
@@ -79,7 +90,7 @@ app.use((err: Error | AppError, req: Request, res: Response, next: NextFunction)
     }
 
     // print unknown errors
-    console.log(err)
+    console.log(err);
 
     // For unknown errors, return a generic 500 error, with stack trace if in dev mode
     res.status(INTERNAL_SERVER_ERROR).json({
@@ -87,7 +98,6 @@ app.use((err: Error | AppError, req: Request, res: Response, next: NextFunction)
       message: "Something went wrong!",
       ...(dev && { error: err.message, stack: err.stack }),
     });
-    
   }
 );
 
