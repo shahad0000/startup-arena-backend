@@ -5,6 +5,7 @@ import {
   getMeService,
   getAllUsersService,
 } from "../services/users.service";
+import { IdeaCollection } from "../models/ideas.model"
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -46,6 +47,38 @@ export const getMe = async (req: AuthRequest, res: Response) => {
     res.status(200).json(user);
   } catch (err) {
     console.error("Error fetching current user:", err);
+    res.status(500).json({ message: "Failed to fetch user data" });
+  }
+};
+
+export const getMyIdeas = async (req: AuthRequest, res: Response) => {
+  try {
+    
+    if (!req.user) {
+      res.status(401).json({ message: "Not authenticated" });
+      return;
+    }
+
+    // req.user.id
+
+    const { id } = req.params
+
+    const idea = await IdeaCollection.find({founderId: id})
+
+    if (!idea) {
+      res.status(404).json({ message: "ideas not found" });
+      return;
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: idea
+    });
+
+
+    
+  } catch (err) {
+    console.error("Error fetching user ideas:", err);
     res.status(500).json({ message: "Failed to fetch user data" });
   }
 };

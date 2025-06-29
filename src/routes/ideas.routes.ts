@@ -4,9 +4,6 @@ import { createIdea, deleteIdeaById, getAllIdeas, getIdeaById, updateIdeaById } 
 
 const router = Router();
 
-// todo
-// GET /api/users/:userId/ideas Get all ideas submitted by a specific user
-
 // Public routes
 router.get('/', getAllIdeas);
 router.get('/:id', getIdeaById);
