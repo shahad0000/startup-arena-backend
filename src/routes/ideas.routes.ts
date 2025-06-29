@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { authorized } from '../middleware/auth.middleware';
-import { createIdea, deleteIdeaById, getAllIdeas, getIdeaById, updateIdeaById } from "../controllers/ideas.controller"
+import { createIdea, deleteIdeaById, getAllIdeas, getIdeaById, getVotes, postVote, updateIdeaById } from "../controllers/ideas.controller"
 
 const router = Router();
 
@@ -12,5 +12,9 @@ router.get('/:id', getIdeaById);
 router.post('/', authorized, createIdea);
 router.put('/:id', authorized, updateIdeaById); // (only by owner)
 router.delete('/:id', authorized, deleteIdeaById); // (only by owner)
+
+// votes
+router.post('/vote/:id', authorized, postVote); // upvote/downvote idea by id
+router.get('/vote/:id', getVotes); // get idea's total votes
 
 export default router; 
