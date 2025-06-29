@@ -6,6 +6,7 @@ interface CreateMeetingParams {
   topic?: string;
   duration?: number;
   type?: number;
+  start_time?: string;
 }
 
 export const createZoomMeeting = async ({
@@ -13,6 +14,7 @@ export const createZoomMeeting = async ({
   topic = "Untitled Meeting",
   duration = 30,
   type = 2,
+  start_time,
 }: CreateMeetingParams) => {
   const token = await generateZoomToken();
 
@@ -20,6 +22,7 @@ export const createZoomMeeting = async ({
     topic,
     type,
     duration,
+    start_time,
     settings: {
       host_video: true,
       participant_video: true,
@@ -45,20 +48,19 @@ export const createZoomMeeting = async ({
 };
 
 export const getUsersRecordings = async () => {
-    const token = await generateZoomToken();
-    const userId = "shahadalarifi5@gmail.com";
-  
-    const from = "2020-01-01";
-    const to = new Date().toISOString().split("T")[0];
-  
-    const response = await axios.get(
-      `https://api.zoom.us/v2/users/${userId}/recordings`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { from, to, page_size: 50 },
-      }
-    );
-  
-    return response.data;
-  };
-  
+  const token = await generateZoomToken();
+  const userId = "shahadalarifi5@gmail.com";
+
+  const from = "2020-01-01";
+  const to = new Date().toISOString().split("T")[0];
+
+  const response = await axios.get(
+    `https://api.zoom.us/v2/users/${userId}/recordings`,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      params: { from, to, page_size: 50 },
+    }
+  );
+
+  return response.data;
+};
