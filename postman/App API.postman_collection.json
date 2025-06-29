@@ -143,6 +143,98 @@
 			"name": "ideas route",
 			"item": [
 				{
+					"name": "votes",
+					"item": [
+						{
+							"name": "get idea's total votes",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "http://localhost:3000/api/ideas/vote/685f087667c9d39a33a81471",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"ideas",
+										"vote",
+										"685f087667c9d39a33a81471"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "post vote by idea id",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"ideaId\": \"685f087667c9d39a33a81471\",\r\n    \"userId\": \"685ee208e52eaf57779343be\",\r\n    \"value\": 1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/ideas/vote/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"ideas",
+										"vote",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
 					"name": "get all ideas",
 					"event": [
 						{
@@ -211,93 +303,6 @@
 							"path": [
 								"api",
 								"ideas",
-								"685f087667c9d39a33a81471"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "post vote by idea id",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"vote\": 1\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:3000/api/ideas/vote/685f087667c9d39a33a81471",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"ideas",
-								"vote",
-								"685f087667c9d39a33a81471"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "get idea's total votes",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"url": {
-							"raw": "http://localhost:3000/api/ideas/vote/685f087667c9d39a33a81471",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "3000",
-							"path": [
-								"api",
-								"ideas",
-								"vote",
 								"685f087667c9d39a33a81471"
 							]
 						}
@@ -439,6 +444,28 @@
 							"path": [
 								"api",
 								"ideas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get idea Analatics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/ideas/analytics/685f087667c9d39a33a81471",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"ideas",
+								"analytics",
+								"685f087667c9d39a33a81471"
 							]
 						}
 					},
@@ -779,6 +806,67 @@
 							"path": [
 								"api",
 								"comments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "venture board",
+			"item": [
+				{
+					"name": "get all venture board ideas",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ideaId\": \"685f089b67c9d39a33a81473\",\r\n    \"userId\": \"685ee208e52eaf57779343be\",\r\n    \"text\": \"hello text900\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/venture-board/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"venture-board",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get venture board idea details",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ideaId\": \"685f089b67c9d39a33a81473\",\r\n    \"userId\": \"685ee208e52eaf57779343be\",\r\n    \"text\": \"hello text900\"\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/venture-board/685f087667c9d39a33a81471",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"venture-board",
+								"685f087667c9d39a33a81471"
 							]
 						}
 					},
