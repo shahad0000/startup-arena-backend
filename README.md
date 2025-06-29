@@ -21,16 +21,18 @@ POST /api/auth/signin
 POST /api/auth/signout
 
 ## Users:
-
-GET /api/users/me Get current logged-in user profile
-GET /api/users/:id Get user by ID
+GET       /api/users Get all users
+GET       /api/users/me Get current logged-in user profile
+GET       /api/users/:id Get user by ID
 
 ## Ideas:
 
 POST /api/ideas Create a new idea 
     Request: {
         title,
+        category,
         description,
+        mvpLink,
         target
     }
 GET /api/ideas Get all ideas

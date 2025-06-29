@@ -12,6 +12,7 @@ import { connectDB, deleteAllCollections } from "./config/db";
 import { AppError } from "./utils/error";
 import authRoutes from "./routes/auth.routes";
 import usersRoutes from "./routes/users.routes";
+import zoomRoutes from "./routes/zoom.routes";
 
 // // Delete all collections
 // deleteAllCollections();
@@ -58,7 +59,8 @@ app.use(cookieParser());
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/users", usersRoutes);
+app.use('/api/zoom', zoomRoutes);
+app.use("/api/users",  usersRoutes);
 
 // Basic route
 app.get("/", (req: Request, res: Response) => {
