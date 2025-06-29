@@ -60,7 +60,7 @@ const userSchema = new Schema<UserDocument>(
     // Restricts role values to four predefined ones
     role: {
       type: String,
-      enum: ["critic", "founder", "investor"],
+      enum: ["critic", "founder", "investor", "admin"],
       required: true,
       default: "critic"
     },

@@ -6,11 +6,13 @@ import {
   deleteUser,
   deleteAllUsers
 } from "../controllers/admin.controller";
-import { authorized } from '../middleware/auth.middleware';
+import { authorized, restrictTo } from '../middleware/auth.middleware';
 
 const router = express.Router();
 
 router.use(authorized);
+
+router.use(restrictTo("admin"));
 
 // CRUD for users
 // router.post("/users", createUser);         
