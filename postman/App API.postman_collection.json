@@ -218,6 +218,93 @@
 					"response": []
 				},
 				{
+					"name": "post vote by idea id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"vote\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/ideas/vote/685f087667c9d39a33a81471",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"ideas",
+								"vote",
+								"685f087667c9d39a33a81471"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get idea's total votes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/ideas/vote/685f087667c9d39a33a81471",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"ideas",
+								"vote",
+								"685f087667c9d39a33a81471"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "update idea by id",
 					"event": [
 						{
