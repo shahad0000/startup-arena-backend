@@ -1,5 +1,11 @@
 # Routes
 
+## Admin :
+
+GET /api/admin/users
+
+DELETE /api/admin/users/:id
+
 ## Auth :
 
 POST /api/auth/signup
@@ -46,11 +52,11 @@ DELETE /api/ideas/:id Delete idea (only by owner)
 
 ## Votes:
 
-POST /api/ideas/:id/vote Post a vote (upvote or downvote) on an idea 
+POST /api/ideas/vote/:id/ Post a vote (upvote or downvote) on an idea 
     Request: {
     value: 1 or -1
     }
-GET /api/ideas/:id/vote Get all vote
+GET /api/ideas/vote/:id/ Get all vote
 
 ## Comments:
 

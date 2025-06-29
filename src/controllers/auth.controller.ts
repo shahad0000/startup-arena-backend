@@ -26,7 +26,7 @@ const signUp = async (req: Request, res: Response, next: NextFunction) => {
     // Set cookies
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      maxAge: 15 * 60 * 1000, // 15 minutes
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 15 minutes = 15 * 60 * 1000
       secure: !dev ? true : false,
       sameSite: dev ? "lax" : "none",
     });
