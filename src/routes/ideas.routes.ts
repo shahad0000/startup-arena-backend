@@ -1,12 +1,13 @@
 import { Router } from 'express';
 import { authorized } from '../middleware/auth.middleware';
-import { createIdea, deleteIdeaById, getAllIdeas, getIdeaById, getVotes, postVote, updateIdeaById } from "../controllers/ideas.controller"
+import { createIdea, deleteIdeaById, getAllIdeas, getIdeaById, getVotes, ideaDetails, postVote, updateIdeaById } from "../controllers/ideas.controller"
 
 const router = Router();
 
 // Public routes
 router.get('/', getAllIdeas);
 router.get('/:id', getIdeaById);
+router.get('/details/:id', ideaDetails);
 
 // Authorized routes
 router.post('/', authorized, createIdea);

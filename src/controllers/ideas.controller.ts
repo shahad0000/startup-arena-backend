@@ -184,3 +184,14 @@ export const getVotes = async (req: Request, res: Response, next: NextFunction) 
     next(error);
   }
 };
+
+export const ideaDetails = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+
+    
+
+  } catch (error) {
+    console.error("getIdeaById ERROR:", error);
+    next(error);
+  }
+};
