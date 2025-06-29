@@ -35,16 +35,17 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"name\": \"John12\",\n  \"email\": \"john12@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"investor\",\n  \"age\": 25,\n  \"gender\": \"male\",\n  \"country\": \"saudi arabia\",\n  \"city\": \"qassim\"\n}"
+							"raw": "{\n  \"name\": \"John13\",\n  \"email\": \"john13@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"investor\",\n  \"age\": 25,\n  \"gender\": \"male\",\n  \"country\": \"saudi arabia\",\n  \"city\": \"qassim\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:3000/auth/signup",
+							"raw": "http://localhost:3000/api/auth/signup",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
+								"api",
 								"auth",
 								"signup"
 							]
@@ -79,13 +80,14 @@
 							"raw": "{\n  \"email\": \"john12@example.com\",\n  \"password\": \"password123\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:3000/auth/signin",
+							"raw": "http://localhost:3000/api/auth/signin",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
+								"api",
 								"auth",
 								"signin"
 							]
@@ -120,15 +122,393 @@
 							"raw": "{\n  \"name\": \"John12\",\n  \"email\": \"john12@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"critic\"\n}"
 						},
 						"url": {
-							"raw": "http://localhost:3000/auth/signout",
+							"raw": "http://localhost:3000/api/auth/signout",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "3000",
 							"path": [
+								"api",
 								"auth",
 								"signout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ideas route",
+			"item": [
+				{
+					"name": "get all ideas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/ideas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"ideas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get idea by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/ideas/685f087667c9d39a33a81471",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"ideas",
+								"685f087667c9d39a33a81471"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update idea by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"founderId\": \"685ee208e52eaf57779343be\",\r\n  \"title\": \"idea title11\",\r\n  \"description\": \"idea desc\",\r\n  \"totalUpvotes\": 5,\r\n  \"totalDownvotes\": 10,\r\n  \"isOnVentureBoard\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/ideas/685f087667c9d39a33a81471",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"ideas",
+								"685f087667c9d39a33a81471"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete idea by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"founderId\": \"685ee208e52eaf57779343be\",\r\n  \"title\": \"idea title0000\",\r\n  \"description\": \"idea desc\",\r\n  \"totalUpvotes\": 5,\r\n  \"totalDownvotes\": 10,\r\n  \"isOnVentureBoard\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/ideas/685f08b667c9d39a33a81479",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"ideas",
+								"685f08b667c9d39a33a81479"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create new idea",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"founderId\": \"685ea9f4806416eb60a20494\",\r\n  \"title\": \"idea title\",\r\n  \"description\": \"idea desc\",\r\n  \"category\": \"education\",\r\n  \"mvpLink\": \"google.com\",\r\n  \"totalUpvotes\": 5,\r\n  \"totalDownvotes\": 10,\r\n  \"isOnVentureBoard\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/ideas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"ideas"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users route",
+			"item": [
+				{
+					"name": "get all users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/users/685ea9f4806416eb60a20494",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"685ea9f4806416eb60a20494"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all user ideas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/users/myIdeas/685ea9f4806416eb60a20494",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"myIdeas",
+								"685ea9f4806416eb60a20494"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get me",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/users/me",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"me"
 							]
 						}
 					},

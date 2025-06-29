@@ -48,8 +48,6 @@ export const getIdeaById = async (req: Request, res: Response, next: NextFunctio
 
     const idea = await IdeaCollection.findOne({_id: id})
 
-    console.log(idea)
-
     if (!idea) {
       res.status(404).json({ message: "idea not found" });
       return;
@@ -71,14 +69,13 @@ export const updateIdeaById = async (req: AuthRequest, res: Response, next: Next
 
     const { id } = req.params
 
-    // console.log(req.body.founderId)
-    // console.log(req.user.id)
+    // req.body.founderId: the idea author
+    // req.user.id: the user requesting update
 
     if (req.body.founderId !== req.user.id) {
       res.status(401).json({ message: "you are not allowed to perform this task" });
       return;
     }
-
 
     const updates = req.body;
   

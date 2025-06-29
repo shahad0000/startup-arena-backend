@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+        
 
 const ideaSchema = new Schema( 
   {
@@ -10,6 +11,12 @@ const ideaSchema = new Schema(
     description: {
       type: String,
       required: true,
+    },
+    category: {
+      type: String,
+    },
+    mvpLink: {
+      type: String,
     },
     totalUpvotes: {
       type: Number,
