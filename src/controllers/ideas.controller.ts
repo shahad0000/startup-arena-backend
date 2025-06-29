@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { OK } from "../utils/http-status";
 import { IdeaCollection } from "../models/ideas.model"
+import { VoteCollection } from "../models/votes.model"
 import { AuthRequest } from "../middleware/auth.middleware"; // Import custom request type that extends Request with a user field for authenticated users
 
 
@@ -46,7 +47,7 @@ export const getIdeaById = async (req: Request, res: Response, next: NextFunctio
 
     const { id } = req.params
 
-    const idea = await IdeaCollection.findOne({_id: id})
+    const idea = await IdeaCollection.findOne({_id: id}).populate("founderId")
 
     if (!idea) {
       res.status(404).json({ message: "idea not found" });
@@ -128,34 +129,13 @@ export const deleteIdeaById = async (req: AuthRequest, res: Response, next: Next
 export const postVote = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
-    const { id } = req.params
-
-    let { vote } =  req.body
-
-    const idea = await IdeaCollection.findOne({_id: id})
-
-    let totalUpvotes = idea?.totalUpvotes ?? 0
-    let totalDownvotes = idea?.totalDownvotes ?? 0
-
-    if (!idea) {
-      res.status(404).json({ message: "idea not found" });
-      return;
-    }
-
-    if (vote == 1){
-      totalUpvotes += 1
-    } else if (vote == -1){
-      totalDownvotes += 1
-    } else {
-      res.status(403).json({ message: "invalid vote value" });
-      return;
-    }
-
-    const updateIdea = await IdeaCollection.findByIdAndUpdate(id, {totalUpvotes, totalDownvotes}, { new: true });
+    const vote = await VoteCollection.create(req.body)
 
     res.status(OK).json({
       status: "success",
-      data: updateIdea
+      data: {
+        vote
+      }
     });
 
   } catch (error) {
@@ -169,18 +149,43 @@ export const getVotes = async (req: Request, res: Response, next: NextFunction) 
 
     const { id } = req.params
 
-    const idea = await IdeaCollection.findOne({_id: id})
+    const votes = await VoteCollection.find({ideaId: id})
+
+    let sum = 0
+
+    votes.map((vote) => {
+      sum += vote.value
+    })
 
     res.status(OK).json({
       status: "success",
       data: {
-        totalUpvotes: idea?.totalUpvotes,
-        totalDownvotes: idea?.totalDownvotes 
+        totalVotes: sum
       }
     });
 
   } catch (error) {
     console.error("getVotes ERROR:", error);
+    next(error);
+  }
+};
+
+export const ideaAnalatics = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+
+    const { id } = req.params
+
+    const votes = await VoteCollection.find({ideaId: id}).populate({path: "userId", select: ["-createdAt", "-updatedAt"]}).select(["-_id", "-ideaId", "-__v", "-createdAt", "-updatedAt"])
+
+    res.status(OK).json({
+      status: "success",
+      data: {
+        votes
+      }
+    });
+
+  } catch (error) {
+    console.error("getIdeaById ERROR:", error);
     next(error);
   }
 };

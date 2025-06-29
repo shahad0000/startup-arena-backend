@@ -15,6 +15,8 @@ import ideasRoutes from "./routes/ideas.routes";
 import usersRoutes from "./routes/users.routes";
 import adminRoutes from "./routes/admin.routes";
 import commentsRoutes from "./routes/comments.routes";
+import ventureBoardRoutes from "./routes/venture-board.routes"
+
 
 // // Delete all collections
 // deleteAllCollections();
@@ -65,6 +67,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/ideas", ideasRoutes);
 app.use("/api/users", usersRoutes);
 app.use("/api/comments", commentsRoutes);
+app.use("/api/venture-board", ventureBoardRoutes);
 
 // Basic route
 app.get("/", (req: Request, res: Response) => {
