@@ -60,9 +60,12 @@ GET /api/ideas/vote/:id/ Get all vote
 
 ## Comments:
 
-POST /api/ideas/:id/comments Add a comment to an idea 
-    Request: { text }
-GET /api/ideas/:id/comments Get all comments on an idea
+GET /api/comments/ get all comments
+GET /api/comments/:id get all comments for one idea by its id
+POST /api/comments/ Add a comment to an idea
+    Request: { ideaId, userId, text }
+PUT /api/comments/:id update a comment
+    Request: { ideaId, userId, text }
 DELETE /api/comments/:id Delete a comment (only by owner)
 
 ## Venture Ideas:
