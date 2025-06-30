@@ -20,6 +20,7 @@ export interface UserDocument extends Document {
   role: "critic" | "founder" | "investor";
   createdAt: Date;
   updatedAt: Date;
+  score: Number;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -64,6 +65,10 @@ const userSchema = new Schema<UserDocument>(
       required: true,
       default: "critic"
     },
+    score: {
+      type: Number,
+      default: 0
+    }
   },
   {
     // Automatically adds createdAt and updatedAt fields
