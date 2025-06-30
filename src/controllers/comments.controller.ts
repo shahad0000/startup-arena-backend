@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { OK } from "../utils/http-status";
 import { CommentCollection } from "../models/comments.model"
 import { AuthRequest } from "../middleware/auth.middleware";
+import { createCommentService } from "../services/comments.service";
 
 
 export const getComments = async (req: Request, res: Response, next: NextFunction) => {
@@ -25,18 +26,19 @@ export const getComments = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-export const createComment = async (req: Request, res: Response, next: NextFunction) => {
+export const createComment = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-
-    const idea = await CommentCollection.create(req.body)
+    const comment = await createCommentService(req.user.id, req.body.ideaId, req.body.text);
 
     res.status(OK).json({
       status: "success",
-      data: idea
+      data: comment,
     });
-
   } catch (error) {
-    console.error("getAllIdeas ERROR:", error);
     next(error);
   }
 };
