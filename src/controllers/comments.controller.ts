@@ -78,7 +78,7 @@ export const deleteComment = async (req: AuthRequest, res: Response, next: NextF
       const { id } = req.params
       const { userId } = req.body
   
-      if (userId !== req.user.id) {
+      if (userId !== req.user.id && req.user.role !== "admin") {
         res.status(401).json({ message: "you are not allowed to perform this task" });
         return;
       }

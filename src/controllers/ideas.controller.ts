@@ -118,7 +118,6 @@ export const updateIdeaById = async (
   }
 };
 
-
 export const deleteIdeaById = async (
   req: AuthRequest,
   res: Response,
@@ -134,7 +133,7 @@ export const deleteIdeaById = async (
       return;
     }
 
-    if (idea.founderId.toString() !== req.user.id) {
+    if (idea.founderId.toString() !== req.user.id && req.user.role !== "admin") {
       res
         .status(401)
         .json({ message: "You are not allowed to perform this task" });
@@ -153,18 +152,50 @@ export const deleteIdeaById = async (
       message: "successfully deleted idea",
     });
   } catch (error) {
-    console.error("getAllIdeas ERROR:", error);
+    console.error("deleteIdeaById ERROR:", error);
     next(error);
   }
 };
 
 export const postVote = async (
-  req: Request,
+  req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const vote = await VoteCollection.create(req.body);
+
+    const { ideaId, value } = req.body
+
+    const userId = req.user.id;
+
+    const voteExists = await VoteCollection.findOne({ userId: userId, ideaId:ideaId });
+    
+    if(voteExists){
+      res.status(403).json({ message: "already voted on this idea" });
+      return;
+    }
+
+    const vote = await VoteCollection.create({
+      ideaId,
+      userId,
+      value
+    });
+
+    //------------------------------------------
+    // chech if idea reached 100 upvotes
+    const votes = await VoteCollection.find({ ideaId: ideaId });
+
+    let sum = 0;
+
+    votes.map((vote) => {
+      sum += vote.value;
+    });
+
+    if(sum >= 100){
+      const updatedIdea = await IdeaCollection.findByIdAndUpdate(ideaId, {isOnVentureBoard: true}, { new: true, });
+      console.log(updatedIdea)
+    }
+    //------------------------------------------
 
     res.status(OK).json({
       status: "success",
@@ -173,7 +204,7 @@ export const postVote = async (
       },
     });
   } catch (error) {
-    console.error("getIdeaById ERROR:", error);
+    console.error("postVote ERROR:", error);
     next(error);
   }
 };
@@ -225,7 +256,7 @@ export const ideaAnalatics = async (
       },
     });
   } catch (error) {
-    console.error("getIdeaById ERROR:", error);
+    console.error("ideaAnalatics ERROR:", error);
     next(error);
   }
 };
