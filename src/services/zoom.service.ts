@@ -23,6 +23,7 @@ export const createZoomMeeting = async ({
     type,
     duration,
     start_time,
+
     settings: {
       host_video: true,
       participant_video: true,

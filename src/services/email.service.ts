@@ -1,4 +1,5 @@
 import { sendMeetingEmail } from "../utils/mailer";
+import schedule from "node-schedule";
 
 interface MeetingEmailParams {
   sender_role: "founder" | "investor";
@@ -29,49 +30,42 @@ export const handleMeetingEmails = async ({
 }: MeetingEmailParams) => {
   const formattedTime = formatTime(start_time);
 
-  const sharedDetails = `
+  const basicDetails = `
     <p><strong>Topic:</strong> ${topic}</p>
     <p><strong>Date:</strong> ${formattedTime}</p>
     <p><strong>Duration:</strong> ${duration} minutes</p>
+  `;
+
+  const linkDetails = `
+    ${basicDetails}
     <p><a href="${join_url}">Click here to join the meeting</a></p>
   `;
 
-  let senderSubject = "";
-  let senderMessage = "";
-  let recipientSubject = "";
-  let recipientMessage = "";
+  const senderSubject = sender_role === "founder"
+    ? "Startup Arena – Your pitch session is ready"
+    : "Startup Arena – Your investor meeting is ready";
 
-  if (sender_role === "founder") {
-    senderSubject = `Startup Arena – Your pitch session is ready`;
-    senderMessage = `
-      <h2>Your meeting is scheduled</h2>
-      ${sharedDetails}
-    `;
+  const recipientSubject = sender_role === "founder"
+    ? "Startup Arena – You’re invited to review a pitch"
+    : "Startup Arena – An investor wants to meet you";
 
-    recipientSubject = `Startup Arena – You’re invited to review a pitch`;
-    recipientMessage = `
-      <h2>Pitch Invitation</h2>
-      ${sharedDetails}
-    `;
-  } else if (sender_role === "investor") {
-    senderSubject = `Startup Arena – Your investor meeting is ready`;
-    senderMessage = `
-      <h2>Your meeting is scheduled</h2>
-      ${sharedDetails}
-    `;
+  await sendMeetingEmail(
+    sender_email,
+    senderSubject,
+    basicDetails + "<p>You will receive the join link at the scheduled time.</p>"
+  );
 
-    recipientSubject = `Startup Arena – An investor wants to meet you`;
-    recipientMessage = `
-      <h2>Investor Meeting Invite</h2>
-      ${sharedDetails}
-    `;
-  } else {
-    throw new Error("Invalid sender role");
-  }
+  await sendMeetingEmail(
+    recipient_email,
+    recipientSubject,
+    basicDetails + "<p>You will receive the join link at the scheduled time.</p>"
+  );
 
-  // Send to sender
-  await sendMeetingEmail(sender_email, senderSubject, senderMessage);
+  const whenToSend = new Date(start_time);
 
-  // Send to recipient
-  await sendMeetingEmail(recipient_email, recipientSubject, recipientMessage);
+  schedule.scheduleJob(whenToSend, async () => {
+    await sendMeetingEmail(sender_email, senderSubject + " – Join Now", linkDetails);
+    await sendMeetingEmail(recipient_email, recipientSubject + " – Join Now", linkDetails);
+    console.log(" Join link emails sent at:", new Date().toLocaleString());
+  });
 };
