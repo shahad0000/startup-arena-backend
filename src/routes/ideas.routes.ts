@@ -16,6 +16,6 @@ router.delete('/:id', authorized, deleteIdeaById); // (only by owner)
 
 // votes
 router.post('/vote/', authorized, postVote); // upvote/downvote idea by id (in body)
-router.get('/vote/:id', getVotes); // get idea's total votes
+router.get('/vote/:id', authorized, getVotes); // get idea's total votes, remove authorized later
 
 export default router; 

@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { OK } from "../utils/http-status";
-import { IdeaCollection } from "../models/ideas.model";
-import { VoteCollection } from "../models/votes.model";
 import { AuthRequest } from "../middleware/auth.middleware"; // Import custom request type that extends Request with a user field for authenticated users
+import { createtIdeasService, deleteIdeaByIdService, getIdeaByIdService, getIdeasService, updateIdeaByIdService } from "../services/ideas.service"
+import { getVotesService, postVoteService } from "../services/vote.service";
 
 export const getAllIdeas = async (
   req: Request,
@@ -10,12 +10,8 @@ export const getAllIdeas = async (
   next: NextFunction
 ) => {
   try {
-    const ideas = await IdeaCollection.find({});
-
-    if (!ideas) {
-      res.status(404).json({ message: "no ideas found" });
-      return;
-    }
+    
+    const ideas = await getIdeasService()
 
     res.status(OK).json({
       status: "success",
@@ -36,13 +32,13 @@ export const createIdea = async (
     const { title, description, category, mvpLink } = req.body;
     const founderId = req.user.id;
 
-    const newIdea = await IdeaCollection.create({
+    const newIdea = await createtIdeasService(
       title,
       description,
       category,
       mvpLink,
       founderId,
-    });
+    );
 
     res.status(OK).json({
       status: "success",
@@ -62,14 +58,7 @@ export const getIdeaById = async (
   try {
     const { id } = req.params;
 
-    const idea = await IdeaCollection.findOne({ _id: id }).populate(
-      "founderId"
-    );
-
-    if (!idea) {
-      res.status(404).json({ message: "idea not found" });
-      return;
-    }
+    const idea =  await getIdeaByIdService(id)
 
     res.status(OK).json({
       status: "success",
@@ -88,29 +77,13 @@ export const updateIdeaById = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
-
-    const idea = await IdeaCollection.findById(id);
-
-    if (!idea) {
-      res.status(404).json({ message: "Idea not found" });
-      return;
-    }
-
-    if (idea.founderId.toString() !== req.user.id) {
-      res
-        .status(401)
-        .json({ message: "You are not allowed to perform this task" });
-      return;
-    }
-
     const updates = req.body;
-    const updatedIdea = await IdeaCollection.findByIdAndUpdate(id, updates, {
-      new: true,
-    });
+
+    const idea = await updateIdeaByIdService(id, req.user.id, updates)
 
     res.status(200).json({
       status: "success",
-      data: updatedIdea,
+      data: idea,
     });
   } catch (error) {
     console.error("updateIdeaById ERROR:", error);
@@ -126,26 +99,7 @@ export const deleteIdeaById = async (
   try {
     const { id } = req.params;
 
-    const idea = await IdeaCollection.findById(id);
-
-    if (!idea) {
-      res.status(404).json({ message: "Idea not found" });
-      return;
-    }
-
-    if (idea.founderId.toString() !== req.user.id && req.user.role !== "admin") {
-      res
-        .status(401)
-        .json({ message: "You are not allowed to perform this task" });
-      return;
-    }
-
-    await IdeaCollection.findByIdAndDelete(id);
-
-    if (!idea) {
-      res.status(404).json({ message: "idea not found" });
-      return;
-    }
+    await deleteIdeaByIdService(id, req.user.id, req.user.role)
 
     res.status(OK).json({
       status: "success",
@@ -166,41 +120,14 @@ export const postVote = async (
 
     const { ideaId, value } = req.body
 
-    const userId = req.user.id;
-
-    const voteExists = await VoteCollection.findOne({ userId: userId, ideaId:ideaId });
+    const vote = await postVoteService(req.user.id, ideaId, value)
+    const totalVotes =  await getVotesService(ideaId)
     
-    if(voteExists){
-      res.status(403).json({ message: "already voted on this idea" });
-      return;
-    }
-
-    const vote = await VoteCollection.create({
-      ideaId,
-      userId,
-      value
-    });
-
-    //------------------------------------------
-    // chech if idea reached 100 upvotes
-    const votes = await VoteCollection.find({ ideaId: ideaId });
-
-    let sum = 0;
-
-    votes.map((vote) => {
-      sum += vote.value;
-    });
-
-    if(sum >= 100){
-      const updatedIdea = await IdeaCollection.findByIdAndUpdate(ideaId, {isOnVentureBoard: true}, { new: true, });
-      console.log(updatedIdea)
-    }
-    //------------------------------------------
-
     res.status(OK).json({
       status: "success",
       data: {
-        vote,
+        totalVotes,
+        vote
       },
     });
   } catch (error) {
@@ -215,22 +142,18 @@ export const getVotes = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
 
-    const votes = await VoteCollection.find({ ideaId: id });
+    const { id } = req.params
 
-    let sum = 0;
-
-    votes.map((vote) => {
-      sum += vote.value;
-    });
-
+    const totalVotes =  await getVotesService(id)
+    
     res.status(OK).json({
       status: "success",
       data: {
-        totalVotes: sum,
+        totalVotes
       },
     });
+
   } catch (error) {
     console.error("getVotes ERROR:", error);
     next(error);
@@ -245,14 +168,12 @@ export const ideaAnalatics = async (
   try {
     const { id } = req.params;
 
-    const votes = await VoteCollection.find({ ideaId: id })
-      .populate({ path: "userId", select: ["-createdAt", "-updatedAt"] })
-      .select(["-_id", "-ideaId", "-__v", "-createdAt", "-updatedAt"]);
+    const idea = await getIdeaByIdService(id)
 
     res.status(OK).json({
       status: "success",
       data: {
-        votes,
+        idea,
       },
     });
   } catch (error) {

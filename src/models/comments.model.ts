@@ -17,7 +17,11 @@ const commentSchema = new Schema(
       type: String,
       required: true,
     },
-    votes: {
+    totalUpvotes: {
+      type: Number,
+      default: 0
+    },
+    totalDownvotes: {
       type: Number,
       default: 0
     },
