@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { OK } from "../utils/http-status";
 import { CommentCollection } from "../models/comments.model"
+import { CommentVoteCollection } from "../models/commentVotes.model"
 import { AuthRequest } from "../middleware/auth.middleware";
 import { createCommentService } from "../services/comments.service";
 
@@ -78,12 +79,7 @@ export const deleteComment = async (req: AuthRequest, res: Response, next: NextF
   try {
 
       const { id } = req.params
-      const { userId } = req.body
-  
-      if (userId !== req.user.id) {
-        res.status(401).json({ message: "you are not allowed to perform this task" });
-        return;
-      }
+
     
       const comment = await CommentCollection.findByIdAndDelete(id);
   
@@ -118,6 +114,57 @@ export const getIdeaComments = async (req: AuthRequest, res: Response, next: Nex
     res.status(OK).json({
       status: "success",
       data: comments
+    });
+
+  } catch (error) {
+    console.error("getIdeaComments ERROR:", error);
+    next(error);
+  }
+};
+
+export const voteComment = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+
+    const { ideaId, commentId, vote } = req.body
+    // const comment = await CommentCollection.find({ideaId: ideaId, _id: commentId})
+    
+    const comment = await CommentVoteCollection.create({
+      commentId,
+      ideaId,
+      vote,
+      userId: req.user.id
+    })
+
+    res.status(OK).json({
+      status: "success",
+      data: comment
+    });
+
+  } catch (error) {
+    console.error("getIdeaComments ERROR:", error);
+    next(error);
+  }
+};
+
+export const getCommentVotes = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+
+    const { id } = req.params
+
+    const votes = await CommentVoteCollection.find({ commentId: id })
+
+    let sum = 0;
+
+    votes.map((vote) => {
+      sum += vote.vote;
+    });
+
+    console.log(sum)
+
+    res.status(OK).json({
+      status: "success",
+      totalCommentVotes: sum,
+      data: votes
     });
 
   } catch (error) {
