@@ -1,20 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import { OK } from "../utils/http-status";
-import { CommentCollection } from "../models/comments.model"
-import { CommentVoteCollection } from "../models/commentVotes.model"
 import { AuthRequest } from "../middleware/auth.middleware";
-import { createCommentService } from "../services/comments.service";
+import { createCommentService, deleteCommentService, getCommentsService, getIdeaCommentsService } from "../services/comments.service";
+import { getCommentVotesService, voteCommentService } from "../services/commentvotes.service";
 
 
 export const getComments = async (req: Request, res: Response, next: NextFunction) => {
   try {
 
-    const comments = await CommentCollection.find({})
-
-    if (!comments) {
-      res.status(404).json({ message: "no ideas found" });
-      return;
-    }
+    const comments = await getCommentsService()
 
     res.status(OK).json({
       status: "success",
@@ -44,54 +38,17 @@ export const createComment = async (
   }
 };
 
-export const updateComment = async (req: AuthRequest, res: Response, next: NextFunction) => {
-  try {
-
-    const { id } = req.params
-    const { userId } = req.body
-
-    if (userId !== req.user.id) {
-      res.status(401).json({ message: "you are not allowed to perform this task" });
-      return;
-    }
-
-    const updates = req.body;
-  
-    const comment = await CommentCollection.findByIdAndUpdate(id, updates, { new: true });
-
-    if (!comment) {
-      res.status(404).json({ message: "comment not found" });
-      return;
-    }
-
-    res.status(OK).json({
-      status: "success",
-      data: comment
-    });
-
-  } catch (error) {
-    console.error("getAllIdeas ERROR:", error);
-    next(error);
-  }
-};
-
 export const deleteComment = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
 
-      const { id } = req.params
+    const { id } = req.params
 
-    
-      const comment = await CommentCollection.findByIdAndDelete(id);
-  
-      if (!comment) {
-        res.status(404).json({ message: "comment not found" });
-        return;
-      }
-  
-      res.status(OK).json({
-        status: "success",
-        message: "successfully deleted comment"
-      });
+    await deleteCommentService(id, req.user.id, req.user.role)
+
+    res.status(OK).json({
+      status: "success",
+      message: "successfully deleted comment"
+    });
 
   } catch (error) {
     console.error("deleteComment ERROR:", error);
@@ -99,17 +56,13 @@ export const deleteComment = async (req: AuthRequest, res: Response, next: NextF
   }
 };
 
+// get all comments for one idea
 export const getIdeaComments = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
 
     const { id } = req.params
 
-    const comments = await CommentCollection.find({ideaId: id})
-
-    if (!comments) {
-      res.status(404).json({ message: "no comments found" });
-      return;
-    }
+    const comments = await getIdeaCommentsService(id)
 
     res.status(OK).json({
       status: "success",
@@ -126,18 +79,12 @@ export const voteComment = async (req: AuthRequest, res: Response, next: NextFun
   try {
 
     const { ideaId, commentId, vote } = req.body
-    // const comment = await CommentCollection.find({ideaId: ideaId, _id: commentId})
-    
-    const comment = await CommentVoteCollection.create({
-      commentId,
-      ideaId,
-      vote,
-      userId: req.user.id
-    })
+
+    const commentVote = await voteCommentService(commentId, ideaId, vote, req.user.id)
 
     res.status(OK).json({
       status: "success",
-      data: comment
+      data: commentVote
     });
 
   } catch (error) {
@@ -151,20 +98,11 @@ export const getCommentVotes = async (req: AuthRequest, res: Response, next: Nex
 
     const { id } = req.params
 
-    const votes = await CommentVoteCollection.find({ commentId: id })
-
-    let sum = 0;
-
-    votes.map((vote) => {
-      sum += vote.vote;
-    });
-
-    console.log(sum)
+    const totalCommentVotes = await getCommentVotesService(id)
 
     res.status(OK).json({
       status: "success",
-      totalCommentVotes: sum,
-      data: votes
+      totalCommentVotes
     });
 
   } catch (error) {
