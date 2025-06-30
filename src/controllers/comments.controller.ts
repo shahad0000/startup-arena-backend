@@ -3,6 +3,7 @@ import { OK } from "../utils/http-status";
 import { CommentCollection } from "../models/comments.model"
 import { CommentVoteCollection } from "../models/commentVotes.model"
 import { AuthRequest } from "../middleware/auth.middleware";
+import { createCommentService } from "../services/comments.service";
 
 
 export const getComments = async (req: Request, res: Response, next: NextFunction) => {
@@ -26,25 +27,19 @@ export const getComments = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-export const createComment = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const createComment = async (
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-
-    const { ideaId, text } = req.body
-    const userId = req.user.id
-
-    const idea = await CommentCollection.create({
-      ideaId,
-      userId,
-      text
-    })
+    const comment = await createCommentService(req.user.id, req.body.ideaId, req.body.text);
 
     res.status(OK).json({
       status: "success",
-      data: idea
+      data: comment,
     });
-
   } catch (error) {
-    console.error("getAllIdeas ERROR:", error);
     next(error);
   }
 };
@@ -84,11 +79,7 @@ export const deleteComment = async (req: AuthRequest, res: Response, next: NextF
   try {
 
       const { id } = req.params
-  
-      // if (userId !== req.user.id && req.user.role !== "admin") {
-      //   res.status(401).json({ message: "you are not allowed to perform this task" });
-      //   return;
-      // }
+
     
       const comment = await CommentCollection.findByIdAndDelete(id);
   
