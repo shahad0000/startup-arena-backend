@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { OK } from "../utils/http-status";
 import { AuthRequest } from "../middleware/auth.middleware"; // Import custom request type that extends Request with a user field for authenticated users
-import { createtIdeasService, deleteIdeaByIdService, getIdeaByIdService, getIdeasService, updateIdeaByIdService } from "../services/ideas.service"
+import { createtIdeasService, deleteIdeaByIdService, getIdeaAnalyticsService, getIdeaByIdService, getIdeasService, updateIdeaByIdService } from "../services/ideas.service"
 import { getVotesService, postVoteService } from "../services/vote.service";
 
 export const getAllIdeas = async (
@@ -168,7 +168,7 @@ export const ideaAnalatics = async (
   try {
     const { id } = req.params;
 
-    const idea = await getIdeaByIdService(id)
+    const idea = await getIdeaAnalyticsService(id)
 
     res.status(OK).json({
       status: "success",

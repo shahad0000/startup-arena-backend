@@ -1,6 +1,7 @@
 import { IdeaCollection } from "../models/ideas.model";
 import { AppError } from "../utils/error";
 import { BAD_REQUEST } from "../utils/http-status";
+import { getVotebyIdService } from "./vote.service";
 
 export const getIdeasService = async () => {
 
@@ -78,7 +79,6 @@ export const deleteIdeaByIdService = async (id: string, userId: string, role: st
   return
 };
 
-
 export const makeVentureBoardService = async (id: string) => {
   
   const idea = await IdeaCollection.findByIdAndUpdate(id, {isOnVentureBoard: true}, { new: true });
@@ -105,3 +105,13 @@ export const updateIdeaVotesService = async (id: string, updates: Object) => {
   return updatedIdea
 };
 
+export const getIdeaAnalyticsService = async (id: string) => {
+
+  const idea = getVotebyIdService(id)
+
+  if (!idea) {
+    throw new AppError("idea votes not found", BAD_REQUEST);
+  }
+
+  return idea
+};
