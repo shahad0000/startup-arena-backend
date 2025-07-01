@@ -18,6 +18,7 @@ export interface UserDocument extends Document {
   country: string;
   city: string;
   role: "critic" | "founder" | "investor";
+  points: Number,
   createdAt: Date;
   updatedAt: Date;
   score: Number;

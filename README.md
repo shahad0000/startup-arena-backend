@@ -51,6 +51,7 @@ GET /api/ideas          Get all ideas
 GET /api/users/:userId/ideas    Get all ideas submitted by a specific user   // commented for now
 GET /api/ideas/:id      Get one idea with full details
 DELETE /api/ideas/:id       Delete idea (only by owner)
+>>>>>>> 0e7c92b228184126150153dcbbbce0e21671c52b
 
 ## Votes:
 

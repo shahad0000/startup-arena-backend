@@ -13,10 +13,10 @@ import { AppError } from "./utils/error";
 import authRoutes from "./routes/auth.routes";
 import ideasRoutes from "./routes/ideas.routes";
 import usersRoutes from "./routes/users.routes";
+import zoomRoutes from "./routes/zoom.routes";
 import adminRoutes from "./routes/admin.routes";
 import commentsRoutes from "./routes/comments.routes";
 import ventureBoardRoutes from "./routes/venture-board.routes"
-
 
 // // Delete all collections
 // deleteAllCollections();
@@ -63,6 +63,7 @@ app.use(cookieParser());
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use('/api/zoom', zoomRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/ideas", ideasRoutes);
 app.use("/api/users", usersRoutes);
