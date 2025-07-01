@@ -115,3 +115,25 @@ export const getIdeaAnalyticsService = async (id: string) => {
 
   return idea
 };
+
+export const getVentureBoardIdeasService = async () => {
+
+  const idea = await IdeaCollection.find({ isOnVentureBoard: true })
+
+  if (!idea) {
+    throw new AppError("idea not found", BAD_REQUEST);
+  }
+
+  return idea
+};
+
+export const getVentureBoardIdeaByIdService = async (id: string) => {
+
+  const idea = await IdeaCollection.findOne({  _id: id, isOnVentureBoard: true }).populate("founderId")
+
+  if (!idea) {
+    throw new AppError("idea not found", BAD_REQUEST);
+  }
+
+  return idea
+};
