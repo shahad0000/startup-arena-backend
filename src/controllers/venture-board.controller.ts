@@ -1,22 +1,17 @@
 import { Request, Response } from "express";
 import { IdeaCollection } from "../models/ideas.model"
+import { getVentureBoardIdeaByIdService, getVentureBoardIdeasService } from "../services/ideas.service";
 
 
 export const ventureBoardIdeas = async (req: Request, res: Response) => {
   try {
 
-    const ideas = await IdeaCollection.find({isOnVentureBoard: true})
-
-    if (!ideas) {
-      res.status(404).json({ message: "no ideas found" });
-      return;
-    }
+    const ideas = await getVentureBoardIdeasService()
 
     res.status(200).json({
       status: "success",
       data: ideas
     });
-
 
   } catch (err) {
     console.error("Error fetching users:", err);
@@ -29,7 +24,7 @@ export const ventureBoardIdeaDetails = async (req: Request, res: Response) => {
 
     const { id } = req.params
 
-    const ideas = await IdeaCollection.findOne({isOnVentureBoard: true, _id: id}).populate("founderId")
+    const ideas = await getVentureBoardIdeaByIdService(id)
 
     if (!ideas) {
       res.status(404).json({ message: "no ideas found" });
