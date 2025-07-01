@@ -1,11 +1,13 @@
 import express from "express";
-import { getAllUsers, getOneUser, getMe } from "../controllers/users.controller";
+import { getAllUsers, getOneUser, getMe, getMyIdeas } from "../controllers/users.controller";
 import { authorized } from "../middleware/auth.middleware";
 
 
 const router = express.Router();
 
-router.get("/", getAllUsers);
-router.get("/me", authorized,  getMe)
-router.get("/:id", getOneUser);
+router.get("/me", authorized, getMe)
+router.get("/:id", authorized, getOneUser);
+router.get("/myIdeas", authorized, getMyIdeas) 
+
+
 export default router;

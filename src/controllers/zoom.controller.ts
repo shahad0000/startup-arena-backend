@@ -5,7 +5,6 @@ import {
 } from "../services/zoom.service";
 import { handleMeetingEmails } from "../services/email.service";
 import { AuthRequest } from "../middleware/auth.middleware";
-import { UsersCollection } from "../models/user.model";
 import { IdeaCollection } from "../models/ideas.model";
 import { CommentCollection } from "../models/comments.model";
 
@@ -19,21 +18,27 @@ export const createMeeting = async (req: AuthRequest, res: Response) => {
     let recipient_email = "";
 
     if (targetType === "idea") {
-      const idea = await IdeasCollection.findById(targetId).populate("user");
-      if (!idea || !idea.user?.email) {
-        return res.status(404).json({ error: "Idea owner not found" });
+      const idea =
+        await IdeaCollection.findById(targetId).populate("founderId") ;
+        console.log("Populated idea:", idea); 
+
+      if (!idea || !(idea as any).founderId?.email) {
+        res.status(404).json({ error: "Idea owner not found" });
+        return;
       }
-      recipient_email = idea.user.email;
+      recipient_email = (idea as any).founderId.email;
     } else if (targetType === "comment") {
-      const comment = await CommentCollection.findById(targetId).populate("user");
-      if (!comment || !comment.user?.email) {
-        return res.status(404).json({ error: "Comment author not found" });
+      const comment =
+        await CommentCollection.findById(targetId).populate("userId");
+      if (!comment || !(comment as any).userId?.email) {
+        res.status(404).json({ error: "Comment author not found" });
+        return;
       }
-      recipient_email = comment.user.email;
+      recipient_email = (comment as any).userId.email;
+    }
     if (!sender_email || !sender_role || !recipient_email) {
-      return res
-        .status(400)
-        .json({ error: "Missing sender or recipient info" });
+      res.status(400).json({ error: "Missing sender or recipient info" });
+      return;
     }
 
     const meetingData = await createZoomMeeting({

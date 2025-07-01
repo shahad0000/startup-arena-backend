@@ -17,7 +17,7 @@ export const sendMeetingEmail = async (
   html: string
 ) => {
   const info = await transporter.sendMail({
-    from: `"Zoom Bot" <${process.env.EMAIL_USER}>`,
+    from: `"Startup Arena" <${process.env.EMAIL_USER}>`,
     to,
     subject,
     html,

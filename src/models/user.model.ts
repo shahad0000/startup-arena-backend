@@ -21,6 +21,7 @@ export interface UserDocument extends Document {
   points: Number,
   createdAt: Date;
   updatedAt: Date;
+  score: Number;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -61,10 +62,14 @@ const userSchema = new Schema<UserDocument>(
     // Restricts role values to four predefined ones
     role: {
       type: String,
-      enum: ["critic", "founder", "investor"],
+      enum: ["critic", "founder", "investor", "admin"],
       required: true,
       default: "critic"
     },
+    score: {
+      type: Number,
+      default: 0
+    }
   },
   {
     // Automatically adds createdAt and updatedAt fields
@@ -85,6 +90,7 @@ const userSchema = new Schema<UserDocument>(
           gender: ret.gender,
           country: ret.country,
           city: ret.city,
+          score: ret.score,
           createdAt: ret.createdAt,
           updatedAt: ret.updatedAt,
         };
