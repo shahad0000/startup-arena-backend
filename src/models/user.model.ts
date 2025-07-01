@@ -89,6 +89,7 @@ const userSchema = new Schema<UserDocument>(
           gender: ret.gender,
           country: ret.country,
           city: ret.city,
+          score: ret.score,
           createdAt: ret.createdAt,
           updatedAt: ret.updatedAt,
         };
