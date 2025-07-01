@@ -59,11 +59,7 @@ export const getMyIdeas = async (req: AuthRequest, res: Response) => {
       return;
     }
 
-    // req.user.id
-
-    const { id } = req.params
-
-    const idea = await IdeaCollection.find({founderId: id})
+    const idea = await IdeaCollection.find({founderId: req.user.id})
 
     if (!idea) {
       res.status(404).json({ message: "ideas not found" });
@@ -74,8 +70,6 @@ export const getMyIdeas = async (req: AuthRequest, res: Response) => {
       status: "success",
       data: idea
     });
-
-
     
   } catch (err) {
     console.error("Error fetching user ideas:", err);
