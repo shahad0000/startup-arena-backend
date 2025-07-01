@@ -64,6 +64,7 @@ export const handleMeetingEmails = async ({
   const whenToSend = new Date(start_time);
 
   schedule.scheduleJob(whenToSend, async () => {
+    console.log("Scheduled join link email for:", whenToSend.toLocaleString());
     await sendMeetingEmail(sender_email, senderSubject + " – Join Now", linkDetails);
     await sendMeetingEmail(recipient_email, recipientSubject + " – Join Now", linkDetails);
     console.log(" Join link emails sent at:", new Date().toLocaleString());

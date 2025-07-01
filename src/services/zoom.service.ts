@@ -50,7 +50,7 @@ export const createZoomMeeting = async ({
 
 export const getUsersRecordings = async () => {
   const token = await generateZoomToken();
-  const userId = "shahadalarifi5@gmail.com";
+  const userId = process.env.ZOOM_USER_ID;
 
   const from = "2020-01-01";
   const to = new Date().toISOString().split("T")[0];

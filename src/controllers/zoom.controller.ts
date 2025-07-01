@@ -5,16 +5,31 @@ import {
 } from "../services/zoom.service";
 import { handleMeetingEmails } from "../services/email.service";
 import { AuthRequest } from "../middleware/auth.middleware";
+import { UsersCollection } from "../models/user.model";
+import { IdeaCollection } from "../models/ideas.model";
+import { CommentCollection } from "../models/comments.model";
 
 export const createMeeting = async (req: AuthRequest, res: Response) => {
-  const { topic, duration, start_time, ideaId } = req.body;
+  const { topic, duration, start_time, targetType, targetId } = req.body;
 
   const sender_email = req.user.email;
   const sender_role = req.user.role;
 
   try {
-    const recipient_email = "2055shahad@gmail.com";
+    let recipient_email = "";
 
+    if (targetType === "idea") {
+      const idea = await IdeasCollection.findById(targetId).populate("user");
+      if (!idea || !idea.user?.email) {
+        return res.status(404).json({ error: "Idea owner not found" });
+      }
+      recipient_email = idea.user.email;
+    } else if (targetType === "comment") {
+      const comment = await CommentCollection.findById(targetId).populate("user");
+      if (!comment || !comment.user?.email) {
+        return res.status(404).json({ error: "Comment author not found" });
+      }
+      recipient_email = comment.user.email;
     if (!sender_email || !sender_role || !recipient_email) {
       return res
         .status(400)
