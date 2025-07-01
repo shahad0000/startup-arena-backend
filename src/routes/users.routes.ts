@@ -5,10 +5,9 @@ import { authorized } from "../middleware/auth.middleware";
 
 const router = express.Router();
 
-router.get("/", getAllUsers);
-router.get("/me", authorized,  getMe)
-router.get("/:id", getOneUser);
-router.get("/myIdeas/:id", authorized, getMyIdeas) // Get all ideas submitted by a specific user
+router.get("/me", authorized, getMe)
+router.get("/:id", authorized, getOneUser);
+router.get("/myIdeas", authorized, getMyIdeas) 
 
 
 export default router;

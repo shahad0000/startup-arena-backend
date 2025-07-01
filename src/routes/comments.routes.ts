@@ -8,7 +8,7 @@ router.get('/', getComments); // get all comments
 router.get('/:id', getIdeaComments); // get all comments for one idea by its id, id = idea id
 
 router.post('/', authorized, createComment);
-router.delete('/:id', authorized, deleteComment);
+router.delete('/:id', authorized, deleteComment); // Delete a comment by id
 
 // comment votes
 router.post('/vote', authorized, voteComment);
