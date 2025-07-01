@@ -6,8 +6,8 @@ import { authorized } from "../middleware/auth.middleware";
 const router = express.Router();
 
 router.get("/me", authorized, getMe)
-router.get("/:id", authorized, getOneUser);
 router.get("/myIdeas", authorized, getMyIdeas) 
+router.get("/:id", authorized, getOneUser);
 
 
 export default router;
