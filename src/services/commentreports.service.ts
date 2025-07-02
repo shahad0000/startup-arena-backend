@@ -32,9 +32,10 @@ export const reportCommentService = async (commentId: string, reporterId: string
 
   const updates: any = { reportCount: count };
 
-  if (count >= REPORT_THRESHOLD) {
-    updates.blocked = true;
-  }
+  // automatically block the user
+  // if (count >= REPORT_THRESHOLD) {
+  //   updates.blocked = true;
+  // }
 
   // update the user data: updates.blocked and user.reportCount
   await UsersCollection.findByIdAndUpdate(user._id, updates, { new: true });
