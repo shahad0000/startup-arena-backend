@@ -3,6 +3,7 @@ import { OK } from "../utils/http-status";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { createCommentService, deleteCommentService, getCommentsService, getIdeaCommentsService } from "../services/comments.service";
 import { getCommentVotesService, voteCommentService } from "../services/commentvotes.service";
+import { reportCommentService } from "../services/commentreports.service";
 
 
 export const getComments = async (req: Request, res: Response, next: NextFunction) => {
@@ -107,6 +108,22 @@ export const getCommentVotes = async (req: AuthRequest, res: Response, next: Nex
 
   } catch (error) {
     console.error("getIdeaComments ERROR:", error);
+    next(error);
+  }
+};
+
+export const reportComment = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const { commentId } = req.body;
+
+    // req.user.id = the reporter id
+    const result = await reportCommentService(commentId, req.user.id);
+
+    res.status(OK).json({
+      status: "success",
+      data: result,
+    });
+  } catch (error) {
     next(error);
   }
 };
