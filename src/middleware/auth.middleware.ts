@@ -53,6 +53,11 @@ export const authorized = async (req: AuthRequest, res: Response, next: NextFunc
       return next(new AppError("User no longer exists", UNAUTHORIZED));
     }
 
+    // prevent access to authorized routes if the user is blocked
+    if (user.blocked) {
+      return next(new AppError("User account is blocked", FORBIDDEN));
+    }
+
     // 4) Grant access to authorized route
     // Attaches the user object to the request and proceeds to the next route handler
     req.user = user;
