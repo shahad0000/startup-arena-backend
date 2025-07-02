@@ -29,7 +29,7 @@ const app: Express = express();
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
-  "frontend link goes here",
+  "https://finalproject-frontend-3xzr.onrender.com/",
 ];
 
 // Middleware
@@ -72,7 +72,7 @@ app.use("/api/venture-board", ventureBoardRoutes);
 
 // Basic route
 app.get("/", (req: Request, res: Response) => {
-  res.status(OK).json({ message: "This is Attendance System API - Welcome!" });
+  res.status(OK).json({ message: "This is Startup Arena API - Welcome!" });
 });
 
 // Error handling middleware
