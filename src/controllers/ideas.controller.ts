@@ -29,7 +29,7 @@ export const createIdea = async (
   next: NextFunction
 ) => {
   try {
-    const { title, description, category, mvpLink } = req.body;
+    const { title, description, category, mvpLink, targetMarket } = req.body;
     const founderId = req.user.id;
 
     const newIdea = await createtIdeasService(
@@ -38,6 +38,7 @@ export const createIdea = async (
       category,
       mvpLink,
       founderId,
+      targetMarket
     );
 
     res.status(OK).json({

@@ -5,7 +5,7 @@ import { getVotebyIdService } from "./vote.service";
 
 export const getIdeasService = async () => {
 
-  const ideas = IdeaCollection.find({})
+  const ideas = await IdeaCollection.find({}).populate("founderId", "name");
 
   if (!ideas) {
     throw new AppError("ideas not found", BAD_REQUEST);
@@ -19,7 +19,8 @@ export const createtIdeasService = async (
   description: string,
   category: string,
   mvpLink: string,
-  founderId: string
+  founderId: string,
+  targetMarket: string,
 ) => {
   return IdeaCollection.create({
     title,
@@ -27,6 +28,7 @@ export const createtIdeasService = async (
     category,
     mvpLink,
     founderId,
+    targetMarket
   });
 };
 
