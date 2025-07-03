@@ -47,7 +47,7 @@ export const deleteCommentService = async (
 export const getIdeaCommentsService = async (id: string) => {
   const comments = await CommentCollection.find({ ideaId: id })
     .populate("userId", "name") 
-    .select(["-ideaId", "-__v", "-updatedAt"]);
+    .select("text userId createdAt totalUpvotes totalDownvotes");
 
   if (!comments) {
     throw new AppError("comments not found", BAD_REQUEST);
