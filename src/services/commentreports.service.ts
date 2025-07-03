@@ -43,3 +43,26 @@ export const reportCommentService = async (commentId: string, reporterId: string
   // return count, updates.blocked
   return { reportCount: count, blocked: count >= REPORT_THRESHOLD };
 };
+
+export const getReportedCommentsService = async () => {
+
+  // count: { $sum: 1 } = count how many times the comment has been reported
+  // $group collapses every report that shares the same commentId into one output document
+  // The count accumulator counts how many collapsed reports, but it doesn’t create extra rows
+  // $unwind removes the array wrapper from lookup; it doesn’t replicate data.
+
+  const results = await CommentReportCollection.aggregate([
+    { $group: { _id: "$commentId", count: { $sum: 1 } } },
+    {
+      $lookup: {
+        from: "comments",
+        localField: "_id",
+        foreignField: "_id",
+        as: "comment",
+      },
+    },
+    { $unwind: "$comment" },
+  ]);
+
+  return results
+};

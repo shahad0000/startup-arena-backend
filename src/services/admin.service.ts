@@ -36,3 +36,16 @@ export const deleteUserService = async (id: string) => {
 export const deleteAllUsersService = async () => {
   return await UsersCollection.deleteMany({});
 };
+
+export const getReportedUsersService = async () => {
+  return UsersCollection.find({ reportCount: { $gte: 1 } }); // get users that has benn reported at least once
+};
+
+export const blockUserService = async (id: string) => {
+  const user = await UsersCollection.findByIdAndUpdate(
+    id,
+    { blocked: true },
+    { new: true },
+  );
+  return user;
+};
