@@ -15,18 +15,20 @@ export const createCommentService = async (
 };
 
 export const getCommentsService = async () => {
-
-  const comments = await CommentCollection.find({})
+  const comments = await CommentCollection.find({});
 
   if (!comments) {
     throw new AppError("no ideas found", BAD_REQUEST);
   }
 
-  return comments
-}
+  return comments;
+};
 
-export const deleteCommentService = async (id: string, userId: string, role: string) => {
-
+export const deleteCommentService = async (
+  id: string,
+  userId: string,
+  role: string
+) => {
   const comment = await CommentCollection.findById(id);
 
   if (!comment) {
@@ -38,43 +40,49 @@ export const deleteCommentService = async (id: string, userId: string, role: str
   }
 
   await CommentCollection.findByIdAndDelete(id);
-  
-  return
+
+  return;
 };
 
 export const getIdeaCommentsService = async (id: string) => {
-
-  const comments = await CommentCollection.find({ideaId: id}).select(["-ideaId", "-__v", "-createdAt", "-updatedAt"]);
+  const comments = await CommentCollection.find({ ideaId: id })
+    .populate("userId", "name") 
+    .select(["-ideaId", "-__v", "-createdAt", "-updatedAt"]);
 
   if (!comments) {
     throw new AppError("comments not found", BAD_REQUEST);
   }
-  
-  return comments
+
+  return comments;
 };
 
-export const updateCommentVoteService = async (commentId: string, updates: Object) => {
-
-  const comment = await CommentCollection.findOne({_id: commentId})
+export const updateCommentVoteService = async (
+  commentId: string,
+  updates: Object
+) => {
+  const comment = await CommentCollection.findOne({ _id: commentId });
 
   if (!comment) {
     throw new AppError("comments not found", BAD_REQUEST);
   }
 
-  const updatedComment = await CommentCollection.findByIdAndUpdate(commentId, updates, {
-    new: true,
-  });
+  const updatedComment = await CommentCollection.findByIdAndUpdate(
+    commentId,
+    updates,
+    {
+      new: true,
+    }
+  );
 
-  return updatedComment
+  return updatedComment;
 };
 
-export const getIcommentByIdService = async (commentId: string,) => {
-
-  const comments = await CommentCollection.findOne({_id: commentId})
+export const getIcommentByIdService = async (commentId: string) => {
+  const comments = await CommentCollection.findOne({ _id: commentId });
 
   if (!comments) {
     throw new AppError("no ideas found", BAD_REQUEST);
   }
 
-  return comments
-}
+  return comments;
+};
