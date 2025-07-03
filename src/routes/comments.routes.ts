@@ -5,9 +5,9 @@ import { createComment, deleteComment, getComments, getCommentVotes, getIdeaComm
 const router = Router();
 
 router.get('/', getComments); // get all comments
-router.get('/:id', getIdeaComments); // get all comments for one idea by its id, id = idea id
+router.get('/idea/:id', getIdeaComments); // get all comments for one idea by its id, id = idea id
 
-router.post('/', authorized, createComment);
+router.post('/idea/', authorized, createComment);
 router.delete('/:id', authorized, deleteComment); // Delete a comment by id
 
 // comment votes
