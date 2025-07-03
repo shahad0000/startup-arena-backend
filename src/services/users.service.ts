@@ -28,3 +28,16 @@ export const updateUserScoreService = async (userId: string, updates: Object) =>
 
   return updatedUser
 };
+
+export const updateUserByIdService = async (id: string, updates: Object) => {
+
+  const idea = await UsersCollection.findById(id);
+
+  if (!idea) {
+    throw new AppError("user not found", BAD_REQUEST);
+  }
+
+  const updatedUser = await UsersCollection.findByIdAndUpdate(id, updates, { new: true });
+
+  return updatedUser
+};

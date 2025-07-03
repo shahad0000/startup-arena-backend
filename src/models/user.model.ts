@@ -24,6 +24,7 @@ export interface UserDocument extends Document {
   score: Number;
   reportCount: Number;
   blocked: boolean;
+  profilePic: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -80,6 +81,10 @@ const userSchema = new Schema<UserDocument>(
       type: Boolean,
       default: false,
     },
+    profilePic: {
+      type: String,
+      default: "",
+    },
   },
   {
     // Automatically adds createdAt and updatedAt fields
@@ -103,6 +108,7 @@ const userSchema = new Schema<UserDocument>(
           score: ret.score,
           reportCount: ret.reportCount,
           blocked: ret.blocked,
+          profilePic: ret.profilePic,
           createdAt: ret.createdAt,
           updatedAt: ret.updatedAt,
         };
