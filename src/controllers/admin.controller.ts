@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { AuthRequest } from "../middleware/auth.middleware";
-import { getUsersService, deleteUserService } from "../services/admin.service";
+import { getUsersService, deleteUserService, getReportedUsersService, blockUserService } from "../services/admin.service";
+import { OK } from "../utils/http-status";
+import { getReportedCommentsService } from "../services/commentreports.service";
 
 export const getUsers = async (
   req: AuthRequest,
@@ -22,5 +24,31 @@ export const deleteUser = async (req: Request, res: Response) => {
   }
 
   res.json({ status: "success", message: "User deleted" });
+  return;
+};
+
+export const getReportedUsers = async (req: Request, res: Response) => {
+  const users = await getReportedUsersService();
+  res.json({ status: "success", data: users });
+  return;
+};
+
+export const blockUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const user = await blockUserService(id);
+  if (!user) {
+    res.status(404).json({ message: "User not found" });
+    return;
+  }
+  res.json({ status: "success", message: "User blocked" });
+  return;
+};
+
+export const getReportedComments = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  const comments = await getReportedCommentsService();
+  res.json({ status: "success", data: comments });
   return;
 };

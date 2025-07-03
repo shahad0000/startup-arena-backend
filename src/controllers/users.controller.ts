@@ -79,28 +79,6 @@ export const getMyIdeas = async (req: AuthRequest, res: Response) => {
   }
 };
 
-// export const updateProfile = async (req: AuthRequest, res: Response) => {
-//   try {
-//     const { profilePic } = req.body;
-//     const userId = req.user.id;
-
-//     if (!profilePic) {
-//       return res.status(400).json({ message: "Profile pic is required" });
-//     }
-
-//     // const user = await getMeService(req.user.id);
-
-//     const uploadResponse = await cloudinary.uploader.upload(profilePic);
-
-//     const updatedUser = updateUserByIdService(userId, { profilePic: uploadResponse.secure_url })
-
-//     res.status(200).json(updatedUser);
-//   } catch (err) {
-//     console.error("Error in update profile pic", err);
-//     res.status(500).json({ message: "Failed to update profile pic" });
-//   }
-// };
-
 export const updateProfile = async (req: AuthRequest, res: Response) => {
   try {
     
