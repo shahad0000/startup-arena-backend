@@ -95,14 +95,17 @@ export const makeVentureBoardService = async (id: string) => {
 export const updateIdeaVotesService = async (id: string, updates: Object) => {
 
   const idea = await IdeaCollection.findById(id);
+  console.log("Vote increments:", updates);  
 
   if (!idea) {
     throw new AppError("idea not found", BAD_REQUEST);
   }
 
-  const updatedIdea = await IdeaCollection.findByIdAndUpdate(id, updates, {
-    new: true,
-  });
+  const updatedIdea = await IdeaCollection.findByIdAndUpdate(
+    id,
+    { $inc: updates },
+    { new: true }
+  );
 
   return updatedIdea
 };

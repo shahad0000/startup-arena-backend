@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authorized } from '../middleware/auth.middleware';
-import { createComment, deleteComment, getComments, getCommentVotes, getIdeaComments, reportComment, voteComment } from '../controllers/comments.controller';
+import { createComment, deleteComment, getComments, getIdeaComments, reportComment } from '../controllers/comments.controller';
+import {getCommentVotes, voteComment} from '../controllers/commentVotes.controller';
 
 const router = Router();
 
