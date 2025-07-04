@@ -5,7 +5,7 @@ import { getVotebyIdService } from "./vote.service";
 
 export const getIdeasService = async () => {
 
-  const ideas = IdeaCollection.find({})
+  const ideas = await IdeaCollection.find({}).populate("founderId", "name");
 
   if (!ideas) {
     throw new AppError("ideas not found", BAD_REQUEST);
@@ -19,7 +19,8 @@ export const createtIdeasService = async (
   description: string,
   category: string,
   mvpLink: string,
-  founderId: string
+  founderId: string,
+  targetMarket: string,
 ) => {
   return IdeaCollection.create({
     title,
@@ -27,6 +28,7 @@ export const createtIdeasService = async (
     category,
     mvpLink,
     founderId,
+    targetMarket
   });
 };
 
@@ -93,14 +95,17 @@ export const makeVentureBoardService = async (id: string) => {
 export const updateIdeaVotesService = async (id: string, updates: Object) => {
 
   const idea = await IdeaCollection.findById(id);
+  console.log("Vote increments:", updates);  
 
   if (!idea) {
     throw new AppError("idea not found", BAD_REQUEST);
   }
 
-  const updatedIdea = await IdeaCollection.findByIdAndUpdate(id, updates, {
-    new: true,
-  });
+  const updatedIdea = await IdeaCollection.findByIdAndUpdate(
+    id,
+    { $inc: updates },
+    { new: true }
+  );
 
   return updatedIdea
 };

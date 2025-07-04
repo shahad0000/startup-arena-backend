@@ -3,6 +3,7 @@ import { OK } from "../utils/http-status";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { createCommentService, deleteCommentService, getCommentsService, getIdeaCommentsService } from "../services/comments.service";
 import { getCommentVotesService, voteCommentService } from "../services/commentvotes.service";
+import { reportCommentService } from "../services/commentreports.service";
 
 
 export const getComments = async (req: Request, res: Response, next: NextFunction) => {
@@ -21,22 +22,20 @@ export const getComments = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-export const createComment = async (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const comment = await createCommentService(req.user.id, req.body.ideaId, req.body.text);
+export const createComment = async (req: AuthRequest, res: Response) => {
+  const { ideaId, text } = req.body;
+  const userId = req.user._id; 
 
-    res.status(OK).json({
-      status: "success",
-      data: comment,
-    });
-  } catch (error) {
-    next(error);
-  }
+  const comment = await createCommentService(userId, ideaId, text);
+
+  const populatedComment = await comment.populate("userId", "name");
+
+  res.status(201).json({
+    success: true,
+    data: populatedComment,
+  });
 };
+
 
 export const deleteComment = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
@@ -75,38 +74,18 @@ export const getIdeaComments = async (req: AuthRequest, res: Response, next: Nex
   }
 };
 
-export const voteComment = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const reportComment = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
+    const { commentId } = req.body;
 
-    const { ideaId, commentId, vote } = req.body
-
-    const commentVote = await voteCommentService(commentId, ideaId, vote, req.user.id)
+    // req.user.id = the reporter id
+    const result = await reportCommentService(commentId, req.user.id);
 
     res.status(OK).json({
       status: "success",
-      data: commentVote
+      data: result,
     });
-
   } catch (error) {
-    console.error("getIdeaComments ERROR:", error);
-    next(error);
-  }
-};
-
-export const getCommentVotes = async (req: AuthRequest, res: Response, next: NextFunction) => {
-  try {
-
-    const { id } = req.params
-
-    const totalCommentVotes = await getCommentVotesService(id)
-
-    res.status(OK).json({
-      status: "success",
-      totalCommentVotes
-    });
-
-  } catch (error) {
-    console.error("getIdeaComments ERROR:", error);
     next(error);
   }
 };

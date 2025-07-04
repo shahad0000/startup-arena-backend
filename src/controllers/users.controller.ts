@@ -4,8 +4,10 @@ import {
   getOneUserService,
   getMeService,
   getAllUsersService,
+  updateUserByIdService,
 } from "../services/users.service";
 import { IdeaCollection } from "../models/ideas.model"
+import cloudinary from "../utils/cloudinary";
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -74,5 +76,26 @@ export const getMyIdeas = async (req: AuthRequest, res: Response) => {
   } catch (err) {
     console.error("Error fetching user ideas:", err);
     res.status(500).json({ message: "Failed to fetch user data" });
+  }
+};
+
+export const updateProfile = async (req: AuthRequest, res: Response) => {
+  try {
+    
+    const { profilePic } = req.body;
+    const userId = req.user.id;
+
+    const uploadResponse = await cloudinary.uploader.upload(profilePic);
+
+    const updatedUser = await updateUserByIdService(userId, { profilePic: uploadResponse.secure_url })
+
+    res.status(200).json({
+      status: "success",
+      data: updatedUser
+    });
+    
+  } catch (err) {
+    console.error("Error in updateProfile:", err);
+    res.status(500).json({ message: "Failed to update user data" });
   }
 };

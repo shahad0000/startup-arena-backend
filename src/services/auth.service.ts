@@ -2,8 +2,8 @@ import jwt from "jsonwebtoken"; // Imports the JWT library to create and verify 
 // UserDocument: a TypeScript type/interface representing the user document
 import { UsersCollection, UserDocument } from "../models/user.model";
 import { jwtConfig } from "../config/jwt"; // Contains settings like the secret key and expiration times for tokens
-import { AppError } from "../utils/error"; // 
-import { BAD_REQUEST, NOT_FOUND, UNAUTHORIZED } from "../utils/http-status";
+import { AppError } from "../utils/error"; //
+import { BAD_REQUEST, NOT_FOUND, UNAUTHORIZED, FORBIDDEN } from "../utils/http-status";
 
 // Registers a new user
 const signUp = async (userData: {
@@ -22,8 +22,15 @@ const signUp = async (userData: {
 }> => {
   // trim input
   // Cleans up input to prevent issues like duplicate emails with different casing
-  userData.email = userData.email.toLowerCase().trim();
+  if (!userData.name || typeof userData.name !== "string") {
+    throw new Error("Name is required and must be a string");
+  }
   userData.name = userData.name.trim();
+
+  if (!userData.email || typeof userData.email !== "string") {
+    throw new Error("Email is required and must be a string");
+  }
+  userData.email = userData.email.toLowerCase().trim();
 
   // check password length
   if (userData.password.length < 8) {
@@ -56,6 +63,11 @@ const signIn = async (
   // Validates the password using the comparePassword method defined in the user model
   if (!user || !(await user.comparePassword(password))) {
     throw new AppError("Invalid credentials", UNAUTHORIZED);
+  }
+
+  // prevent login if the user is blocked
+  if (user.blocked) {
+    throw new AppError("Account is blocked", FORBIDDEN);
   }
 
   const { accessToken, refreshToken } = await generateTokens(user);

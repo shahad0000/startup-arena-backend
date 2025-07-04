@@ -8,7 +8,7 @@ import bcrypt from "bcryptjs";
 // Includes role with valid values to control access
 // id is used in the transform function (not _id directly)
 
-export interface UserDocument extends Document { 
+export interface UserDocument extends Document {
   id: string;
   name: string;
   email: string;
@@ -18,10 +18,13 @@ export interface UserDocument extends Document {
   country: string;
   city: string;
   role: "critic" | "founder" | "investor";
-  points: Number,
+  points: Number;
   createdAt: Date;
   updatedAt: Date;
   score: Number;
+  reportCount: Number;
+  blocked: boolean;
+  profilePic: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -64,12 +67,24 @@ const userSchema = new Schema<UserDocument>(
       type: String,
       enum: ["critic", "founder", "investor", "admin"],
       required: true,
-      default: "critic"
+      default: "critic",
     },
     score: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
+    reportCount: { // how many times the user has been reported, when count reaches ex: 3, the user will be blocked
+      type: Number,
+      default: 0,
+    },
+    blocked: {
+      type: Boolean,
+      default: false,
+    },
+    profilePic: {
+      type: String,
+      default: "",
+    },
   },
   {
     // Automatically adds createdAt and updatedAt fields
@@ -91,6 +106,9 @@ const userSchema = new Schema<UserDocument>(
           country: ret.country,
           city: ret.city,
           score: ret.score,
+          reportCount: ret.reportCount,
+          blocked: ret.blocked,
+          profilePic: ret.profilePic,
           createdAt: ret.createdAt,
           updatedAt: ret.updatedAt,
         };

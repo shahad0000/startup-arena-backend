@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import { OK } from "../utils/http-status";
 import { AuthRequest } from "../middleware/auth.middleware"; // Import custom request type that extends Request with a user field for authenticated users
 import { createtIdeasService, deleteIdeaByIdService, getIdeaAnalyticsService, getIdeaByIdService, getIdeasService, updateIdeaByIdService } from "../services/ideas.service"
-import { getVotesService, postVoteService } from "../services/vote.service";
 
 export const getAllIdeas = async (
   req: Request,
@@ -29,7 +28,7 @@ export const createIdea = async (
   next: NextFunction
 ) => {
   try {
-    const { title, description, category, mvpLink } = req.body;
+    const { title, description, category, mvpLink, targetMarket } = req.body;
     const founderId = req.user.id;
 
     const newIdea = await createtIdeasService(
@@ -38,6 +37,7 @@ export const createIdea = async (
       category,
       mvpLink,
       founderId,
+      targetMarket
     );
 
     res.status(OK).json({
@@ -111,54 +111,7 @@ export const deleteIdeaById = async (
   }
 };
 
-export const postVote = async (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
 
-    const { ideaId, value } = req.body
-
-    const vote = await postVoteService(req.user.id, ideaId, value)
-    const totalVotes =  await getVotesService(ideaId)
-    
-    res.status(OK).json({
-      status: "success",
-      data: {
-        totalVotes,
-        vote
-      },
-    });
-  } catch (error) {
-    console.error("postVote ERROR:", error);
-    next(error);
-  }
-};
-
-export const getVotes = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-
-    const { id } = req.params
-
-    const totalVotes =  await getVotesService(id)
-    
-    res.status(OK).json({
-      status: "success",
-      data: {
-        totalVotes
-      },
-    });
-
-  } catch (error) {
-    console.error("getVotes ERROR:", error);
-    next(error);
-  }
-};
 
 export const ideaAnalatics = async (
   req: Request,
