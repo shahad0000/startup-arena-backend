@@ -9,11 +9,12 @@ import { IdeaCollection } from "../models/ideas.model";
 import { CommentCollection } from "../models/comments.model";
 
 export const createMeeting = async (req: AuthRequest, res: Response) => {
-  const { topic, duration, start_time, targetType, targetId } = req.body;
+  const { topic, duration, start_time, targetType, targetId, isPrivate } = req.body;
 
   const sender_email = req.user.email;
   const sender_role = req.user.role;
-
+  console.log("REQ.USER", req.user);
+  console.log("REQ.BODY", req.body)
   try {
     let recipient_email = "";
 
@@ -46,6 +47,7 @@ export const createMeeting = async (req: AuthRequest, res: Response) => {
       topic,
       duration,
       start_time,
+      isPrivate
     });
 
     await handleMeetingEmails({
