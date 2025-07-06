@@ -46,6 +46,10 @@ app.use(
   })
 );
 
+app.use(express.json({
+  limit: '10mb'
+}));
+
 // Adds security-related HTTP headers using Helmet
 app.use(helmet());
 // Logs HTTP requests, routing them through the custom logger
