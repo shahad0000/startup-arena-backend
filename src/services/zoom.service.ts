@@ -64,5 +64,34 @@ export const getUsersRecordings = async () => {
     }
   );
 
-  return response.data;
+  const meetings = response.data.meetings;
+  for (const meeting of meetings) {
+    try {
+      await makeRecordingPublic(meeting.uuid);
+    } catch (err) {
+      console.error("Failed to make public:", meeting.uuid, err);
+    }
+  }
+
+  return meetings;
+};
+
+export const makeRecordingPublic = async (meetingUUID: string) => {
+  const token = await generateZoomToken();
+
+  const encodedUUID = encodeURIComponent(encodeURIComponent(meetingUUID));
+
+  await axios.patch(
+    `https://api.zoom.us/v2/meetings/${encodedUUID}/recordings/settings`,
+    {
+      share_recording: "publicly",
+      password: "",
+      on_demand: false,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };

@@ -1,7 +1,6 @@
 import { Schema, model, Document } from "mongoose";
 import bcrypt from "bcryptjs";
 
-
 // Strongly types the user documents
 // Extends Mongoose's Document so the schema can be used with Mongoose methods
 // Adds a custom method comparePassword that compares plain vs hashed passwords
@@ -73,7 +72,8 @@ const userSchema = new Schema<UserDocument>(
       type: Number,
       default: 0,
     },
-    reportCount: { // how many times the user has been reported, when count reaches ex: 3, the user will be blocked
+    reportCount: {
+      // how many times the user has been reported, when count reaches ex: 3, the user will be blocked
       type: Number,
       default: 0,
     },
@@ -134,7 +134,6 @@ const userSchema = new Schema<UserDocument>(
 
 // Hash password before saving
 userSchema.pre("save", async function (next) {
-
   // If the password hasn't changed (e.g. updating name/email), skip hashing
   if (!this.isModified("password")) return next();
 

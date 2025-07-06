@@ -29,7 +29,7 @@ const app: Express = express();
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
-  "https://finalproject-frontend-3xzr.onrender.com/",
+  "https://finalproject-frontend-3xzr.onrender.com",
 ];
 
 // Middleware

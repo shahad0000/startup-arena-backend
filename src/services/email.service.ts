@@ -3,6 +3,7 @@ import schedule from "node-schedule";
 
 interface MeetingEmailParams {
   sender_role: "founder" | "investor";
+  sender_name: string;
   sender_email: string;
   recipient_email: string;
   topic: string;
@@ -21,6 +22,7 @@ const formatTime = (isoString: string) => {
 
 export const handleMeetingEmails = async ({
   sender_role,
+  sender_name,
   sender_email,
   recipient_email,
   topic,
@@ -59,7 +61,7 @@ export const handleMeetingEmails = async ({
     sender_email,
     senderSubject,
     `
-    <p>Hi,</p>
+      <p>Hi ${sender_name},</p>
     <p>Your upcoming meeting has been scheduled. Here are the details:</p>
     ${basicDetails}
     <p>You will receive the join link right before the meeting starts.</p>
@@ -71,8 +73,8 @@ export const handleMeetingEmails = async ({
     recipient_email,
     recipientSubject,
     `
-    <p>Hi,</p>
-    <p>You have been invited to an important meeting. Here are the details:</p>
+      <p>Hi,</p>
+      <p><strong>${sender_name}</strong> has invited you to an important meeting. Here are the details:</p>
     ${basicDetails}
     <p>The join link will be sent to you shortly before the meeting begins.</p>
     <p>Looking forward to connecting you soon!<br/>The Startup Arena Team</p>

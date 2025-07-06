@@ -13,8 +13,8 @@ export const createMeeting = async (req: AuthRequest, res: Response) => {
 
   const sender_email = req.user.email;
   const sender_role = req.user.role;
-  console.log("REQ.USER", req.user);
-  console.log("REQ.BODY", req.body)
+  const sender_name = req.user.name; 
+
   try {
     let recipient_email = "";
 
@@ -52,6 +52,7 @@ export const createMeeting = async (req: AuthRequest, res: Response) => {
 
     await handleMeetingEmails({
       sender_role,
+      sender_name,
       sender_email,
       recipient_email,
       topic,
