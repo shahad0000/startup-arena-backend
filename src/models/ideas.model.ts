@@ -18,6 +18,10 @@ const ideaSchema = new Schema(
     mvpLink: {
       type: String,
     },
+    targetMarket: {         
+      type: String,
+      default: "Not specified",
+    },
     totalUpvotes: {
       type: Number,
       default: 0

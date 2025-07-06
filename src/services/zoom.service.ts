@@ -7,6 +7,7 @@ interface CreateMeetingParams {
   duration?: number;
   type?: number;
   start_time?: string;
+  isPrivate?: boolean;
 }
 
 export const createZoomMeeting = async ({
@@ -15,6 +16,7 @@ export const createZoomMeeting = async ({
   duration = 30,
   type = 2,
   start_time,
+  isPrivate = false,
 }: CreateMeetingParams) => {
   const token = await generateZoomToken();
 
@@ -23,14 +25,13 @@ export const createZoomMeeting = async ({
     type,
     duration,
     start_time,
-
     settings: {
       host_video: true,
       participant_video: true,
       approval_type: 2,
       waiting_room: false,
       join_before_host: true,
-      auto_recording: "cloud",
+      auto_recording: isPrivate ? "none" : "cloud",
     },
   };
 

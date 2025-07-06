@@ -22,22 +22,20 @@ export const getComments = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-export const createComment = async (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const comment = await createCommentService(req.user.id, req.body.ideaId, req.body.text);
+export const createComment = async (req: AuthRequest, res: Response) => {
+  const { ideaId, text } = req.body;
+  const userId = req.user._id; 
 
-    res.status(OK).json({
-      status: "success",
-      data: comment,
-    });
-  } catch (error) {
-    next(error);
-  }
+  const comment = await createCommentService(userId, ideaId, text);
+
+  const populatedComment = await comment.populate("userId", "name");
+
+  res.status(201).json({
+    success: true,
+    data: populatedComment,
+  });
 };
+
 
 export const deleteComment = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
@@ -68,42 +66,6 @@ export const getIdeaComments = async (req: AuthRequest, res: Response, next: Nex
     res.status(OK).json({
       status: "success",
       data: comments
-    });
-
-  } catch (error) {
-    console.error("getIdeaComments ERROR:", error);
-    next(error);
-  }
-};
-
-export const voteComment = async (req: AuthRequest, res: Response, next: NextFunction) => {
-  try {
-
-    const { ideaId, commentId, vote } = req.body
-
-    const commentVote = await voteCommentService(commentId, ideaId, vote, req.user.id)
-
-    res.status(OK).json({
-      status: "success",
-      data: commentVote
-    });
-
-  } catch (error) {
-    console.error("getIdeaComments ERROR:", error);
-    next(error);
-  }
-};
-
-export const getCommentVotes = async (req: AuthRequest, res: Response, next: NextFunction) => {
-  try {
-
-    const { id } = req.params
-
-    const totalCommentVotes = await getCommentVotesService(id)
-
-    res.status(OK).json({
-      status: "success",
-      totalCommentVotes
     });
 
   } catch (error) {
