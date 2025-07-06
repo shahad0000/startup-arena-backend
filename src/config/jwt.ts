@@ -8,7 +8,7 @@ export const jwtConfig = {
   secret: process.env.JWT_SECRET,
   accessToken: {
     options: {
-      expiresIn: '15m',
+      expiresIn: '7d', // 15m
       algorithm: 'HS256',
     } as SignOptions,
   },
