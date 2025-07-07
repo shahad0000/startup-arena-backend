@@ -1,19 +1,33 @@
 import axios from "axios";
 import fs from "fs";
 import path from "path";
+import crypto from "crypto";
 
-export const downloadZoomRecording = async (downloadUrl: string, uuid: string): Promise<string> => {
-  const filePath = path.join(__dirname, `../../downloads/${uuid}.mp4`);
-  const writer = fs.createWriteStream(filePath);
+const getSafeFilename = (uuid: string) => {
+  return Buffer.from(uuid).toString("base64").replace(/[+/=]/g, "_");
+};
 
-  const response = await axios.get(downloadUrl, {
-    responseType: "stream",
-  });
+export const downloadZoomRecording = async (
+  downloadUrl: string,
+  uuid: string
+): Promise<string> => {
+  const safeUUID = getSafeFilename(uuid);
+  try {
+    const filePath = path.join(__dirname, `../../downloads/${safeUUID}.mp4`);
+    const writer = fs.createWriteStream(filePath);
 
-  response.data.pipe(writer);
+    const response = await axios.get(downloadUrl, {
+      responseType: "stream",
+    });
 
-  return new Promise((resolve, reject) => {
-    writer.on("finish", () => resolve(filePath));
-    writer.on("error", reject);
-  });
+    response.data.pipe(writer);
+
+    return new Promise((resolve, reject) => {
+      writer.on("finish", () => resolve(filePath));
+      writer.on("error", reject);
+    });
+  } catch (err) {
+    console.log(err);
+    return Promise.reject(err);
+  }
 };

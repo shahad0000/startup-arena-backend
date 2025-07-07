@@ -109,7 +109,6 @@ export const uploadRecordingsToYoutube = async (req: Request, res: Response) => 
 
         uploadedIds.push(uploadResult.id);
 
-        // Safely delete
         if (fs.existsSync(localPath)) fs.unlinkSync(localPath);
       }
     }
