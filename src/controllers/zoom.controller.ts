@@ -7,21 +7,24 @@ import { handleMeetingEmails } from "../services/email.service";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { IdeaCollection } from "../models/ideas.model";
 import { CommentCollection } from "../models/comments.model";
+import { downloadZoomRecording } from "../utils/downloadZoomRecording";
+import { uploadVideoToYoutube } from "../services/youtube.service";
+import fs from "fs";
 
 export const createMeeting = async (req: AuthRequest, res: Response) => {
-  const { topic, duration, start_time, targetType, targetId, isPrivate } = req.body;
+  const { topic, duration, start_time, targetType, targetId, isPrivate } =
+    req.body;
 
   const sender_email = req.user.email;
   const sender_role = req.user.role;
-  const sender_name = req.user.name; 
+  const sender_name = req.user.name;
 
   try {
     let recipient_email = "";
 
     if (targetType === "idea") {
       const idea =
-        await IdeaCollection.findById(targetId).populate("founderId") ;
-        console.log("Populated idea:", idea); 
+        await IdeaCollection.findById(targetId).populate("founderId");
 
       if (!idea || !(idea as any).founderId?.email) {
         res.status(404).json({ error: "Idea owner not found" });
@@ -47,7 +50,7 @@ export const createMeeting = async (req: AuthRequest, res: Response) => {
       topic,
       duration,
       start_time,
-      isPrivate
+      isPrivate,
     });
 
     await handleMeetingEmails({
@@ -80,3 +83,41 @@ export const fetchRecordings = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to get recordings" });
   }
 };
+
+
+export const uploadRecordingsToYoutube = async (req: Request, res: Response) => {
+  try {
+    const recordings = await getUsersRecordings();
+    const uploadedIds: string[] = [];
+
+    for (const meeting of recordings) {
+      const file = meeting.recording_files.find(
+        (f: any) => f.file_type === "MP4"
+      );
+
+      if (file) {
+        const localPath = await downloadZoomRecording(
+          file.download_url,
+          meeting.uuid
+        );
+
+        const uploadResult = await uploadVideoToYoutube(
+          localPath,
+          meeting.topic,
+          "Uploaded from Zoom"
+        );
+
+        uploadedIds.push(uploadResult.id);
+
+        // Safely delete
+        if (fs.existsSync(localPath)) fs.unlinkSync(localPath);
+      }
+    }
+
+    res.json({ message: "Uploaded successfully", uploadedIds });
+  } catch (error) {
+    console.error("Upload to YouTube failed", error);
+    res.status(500).json({ error: "Upload failed" });
+  }
+};
+
