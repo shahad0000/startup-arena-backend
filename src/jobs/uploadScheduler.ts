@@ -6,7 +6,7 @@ import { getUploadedUUIDs, addUploadedUUID } from "../utils/uploadedTracker";
 import fs from "fs";
 
 export const startZoomToYouTubeScheduler = () => {
-  cron.schedule("*/10 * * * *", async () => {
+  cron.schedule("0 */5 * * *", async () => {
     console.log("Running scheduled upload task...");
 
     try {
