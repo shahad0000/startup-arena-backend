@@ -4,6 +4,7 @@ import { BAD_REQUEST } from "../utils/http-status";
 import {
   getIdeaByIdService,
   makeVentureBoardService,
+  removeFromVentureBoardService,
   updateIdeaVotesService,
 } from "./ideas.service";
 
@@ -15,6 +16,7 @@ export const postVoteService = async (
   const existingVote = await VoteCollection.findOne({ userId, ideaId });
 
   if (value === 0) {
+    // Case A: trying to remove a vote that doesn’t exist
     if (!existingVote) {
       const updatedIdea = await getIdeaByIdService(ideaId);
       return {
@@ -26,15 +28,20 @@ export const postVoteService = async (
       };
     }
 
+    // Case B: vote exists -> delete it
     await VoteCollection.deleteOne({ userId, ideaId });
+    // Determine which counter to decrement
     const inc = existingVote.value === 1
       ? { totalUpvotes: -1 }
       : { totalDownvotes: -1 };
 
+    // Apply decrement to the Idea document
     await updateIdeaVotesService(ideaId, inc);
 
   } else if (!existingVote) {
+    // Create new Vote document
     await VoteCollection.create({ userId, ideaId, value });
+    // Increment the appropriate counter
     const inc = value === 1
       ? { totalUpvotes: 1 }
       : { totalDownvotes: 1 };
@@ -42,8 +49,9 @@ export const postVoteService = async (
     await updateIdeaVotesService(ideaId, inc);
 
   } else if (existingVote.value !== value) {
+    // Update the Vote value from 1 -> -1 or -1 -> 1
     await VoteCollection.updateOne({ userId, ideaId }, { value });
-
+    // decrement the old counter and increment the new one
     const voteChange = value === 1
       ? { totalUpvotes: 1, totalDownvotes: -1 }  
       : { totalUpvotes: -1, totalDownvotes: 1 }; 
@@ -51,6 +59,7 @@ export const postVoteService = async (
     await updateIdeaVotesService(ideaId, voteChange);
 
   } else {
+    // User clicked the same vote again (no change)
     const updatedIdea = await getIdeaByIdService(ideaId);
     return {
       message: "vote unchanged",
@@ -61,7 +70,19 @@ export const postVoteService = async (
     };
   }
 
-  const updatedIdea = await getIdeaByIdService(ideaId);
+  let updatedIdea = await getIdeaByIdService(ideaId);
+
+  const totalVotes = updatedIdea.totalUpvotes + updatedIdea.totalDownvotes;
+
+  if (totalVotes >= 5 && !updatedIdea.isOnVentureBoard) {
+    await makeVentureBoardService(ideaId);
+    updatedIdea = await getIdeaByIdService(ideaId);
+  } else if (totalVotes < 5 && updatedIdea.isOnVentureBoard) {
+    await removeFromVentureBoardService(ideaId);
+    updatedIdea = await getIdeaByIdService(ideaId);
+  }
+
+
   return {
     message: "vote updated",
     totalVotes: {
