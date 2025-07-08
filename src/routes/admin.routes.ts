@@ -5,6 +5,7 @@ import {
   getReportedComments,
   getReportedUsers,
   blockUser,
+  unblockUser,
 } from "../controllers/admin.controller";
 import { authorized, restrictTo } from '../middleware/auth.middleware';
 
@@ -18,7 +19,8 @@ router.use(restrictTo("admin"));
 router.get("/users", getUsers);
 router.get("/repoted-comments", getReportedComments);
 router.get("/repoted-users", getReportedUsers);
-router.put("/block-user/:id", blockUser);    
+router.put("/block-user/:id", blockUser);
+router.put("/unblock-user/:id", unblockUser);    
 router.delete("/users/:id", deleteUser);
 
 export default router;
