@@ -137,7 +137,7 @@ export const getIdeaAnalyticsService = async (id: string) => {
 
 export const getVentureBoardIdeasService = async () => {
 
-  const idea = await IdeaCollection.find({ isOnVentureBoard: true })
+  const idea = await IdeaCollection.find({ isOnVentureBoard: true }).populate("founderId");
 
   if (!idea) {
     throw new AppError("idea not found", BAD_REQUEST);
