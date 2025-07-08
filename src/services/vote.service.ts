@@ -72,7 +72,7 @@ export const postVoteService = async (
 
   let updatedIdea = await getIdeaByIdService(ideaId);
 
-  const totalVotes = updatedIdea.totalUpvotes + updatedIdea.totalDownvotes;
+  const totalVotes = updatedIdea.totalUpvotes - updatedIdea.totalDownvotes;
 
   if (totalVotes >= 5 && !updatedIdea.isOnVentureBoard) {
     await makeVentureBoardService(ideaId);
