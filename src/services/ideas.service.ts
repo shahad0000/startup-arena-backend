@@ -5,7 +5,7 @@ import { getVotebyIdService } from "./vote.service";
 
 export const getIdeasService = async () => {
 
-  const ideas = await IdeaCollection.find({}).populate("founderId", "name profilePic");
+  const ideas = await IdeaCollection.find({}).populate("founderId");
 
   if (!ideas) {
     throw new AppError("ideas not found", BAD_REQUEST);
