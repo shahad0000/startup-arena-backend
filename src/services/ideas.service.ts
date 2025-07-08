@@ -92,6 +92,20 @@ export const makeVentureBoardService = async (id: string) => {
   return
 };
 
+export const removeFromVentureBoardService = async (id: string) => {
+  const idea = await IdeaCollection.findByIdAndUpdate(
+    id,
+    { isOnVentureBoard: false },
+    { new: true }
+  );
+
+  if (!idea) {
+    throw new AppError("idea not found", BAD_REQUEST);
+  }
+
+  return;
+};
+
 export const updateIdeaVotesService = async (id: string, updates: Object) => {
 
   const idea = await IdeaCollection.findById(id);
