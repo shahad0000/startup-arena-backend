@@ -49,3 +49,12 @@ export const blockUserService = async (id: string) => {
   );
   return user;
 };
+
+export const unblockUserService = async (id: string) => {
+  const user = await UsersCollection.findByIdAndUpdate(
+    id,
+    { blocked: false },
+    { new: true },
+  );
+  return user;
+};
