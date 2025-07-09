@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-const filePath = path.join(__dirname, "../../data/uploaded.json");
+const filePath = path.resolve(process.cwd(), "src/data/uploaded.json");
 
 export const getUploadedUUIDs = (): string[] => {
   if (!fs.existsSync(filePath)) return [];
