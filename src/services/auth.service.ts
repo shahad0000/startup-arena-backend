@@ -4,7 +4,6 @@ import { UsersCollection, UserDocument } from "../models/user.model";
 import { jwtConfig } from "../config/jwt"; // Contains settings like the secret key and expiration times for tokens
 import { AppError } from "../utils/error"; //
 import { BAD_REQUEST, NOT_FOUND, UNAUTHORIZED, FORBIDDEN } from "../utils/http-status";
-
 // Registers a new user
 const signUp = async (userData: {
   name: string;

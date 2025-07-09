@@ -17,6 +17,9 @@ import zoomRoutes from "./routes/zoom.routes";
 import adminRoutes from "./routes/admin.routes";
 import commentsRoutes from "./routes/comments.routes";
 import ventureBoardRoutes from "./routes/venture-board.routes"
+import { startZoomToYouTubeScheduler } from "./jobs/uploadScheduler";
+
+startZoomToYouTubeScheduler();
 
 // // Delete all collections
 // deleteAllCollections();
