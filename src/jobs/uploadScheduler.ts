@@ -2,7 +2,7 @@ import cron from "node-cron";
 import { getUsersRecordings } from "../services/zoom.service";
 import { uploadVideoToYoutube } from "../services/youtube.service";
 import { downloadZoomRecording } from "../utils/downloadZoomRecording";
-import { getUploadedUUIDs, addUploadedUUID } from "../utils/uploadedTracker";
+import { getUploadedUUIDs } from "../utils/uploadedTracker";
 import fs from "fs";
 
 export const startZoomToYouTubeScheduler = () => {
