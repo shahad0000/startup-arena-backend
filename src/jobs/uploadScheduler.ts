@@ -2,11 +2,12 @@ import cron from "node-cron";
 import { getUsersRecordings } from "../services/zoom.service";
 import { uploadVideoToYoutube } from "../services/youtube.service";
 import { downloadZoomRecording } from "../utils/downloadZoomRecording";
-import { getUploadedUUIDs } from "../utils/uploadedTracker";
+import { getUploadedUUIDs, addUploadedUUID } from "../utils/uploadedTracker";
 import fs from "fs";
 
 export const startZoomToYouTubeScheduler = () => {
-  cron.schedule("0 0 1 * *", async () => {
+
+  cron.schedule("0 0 */2 * *", async () => {
     console.log("Running scheduled upload task...");
 
     try {
@@ -35,6 +36,10 @@ export const startZoomToYouTubeScheduler = () => {
         );
 
         console.log("Uploaded to YouTube:", uploadResult.id);
+
+        // Add it to tracker
+        addUploadedUUID(meeting.uuid);
+
         if (fs.existsSync(localPath)) fs.unlinkSync(localPath);
       }
     } catch (error) {
