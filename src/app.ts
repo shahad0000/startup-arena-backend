@@ -29,23 +29,12 @@ connectDB();
 
 const app: Express = express();
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:3000",
-  "https://finalproject-frontend-3xzr.onrender.com",
-];
-
 // Middleware
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl)
-      if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      return callback(new Error("Not allowed by CORS"));
-    },
+    origin: true,
     credentials: true,
+    optionsSuccessStatus: 200,
   })
 );
 
