@@ -1,24 +1,26 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, CookieOptions } from "express";
 import * as AuthService from "../services/auth.service";
 import { AppError } from "../utils/error";
 import { AuthRequest } from "../middleware/auth.middleware";
 import { CREATED, OK } from "../utils/http-status";
+import { dev } from "../utils/helpers";
 
 // Define consistent cookie options for tokens
-const longLivedCookieOpts = {
+const baseCookieOpts: CookieOptions = {
   httpOnly: true,
-  secure: true,
-  sameSite: "none" as const,
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  secure: !dev,
+  sameSite: dev ? "lax" : "none",
   path: "/",
 };
 
+const longLivedCookieOpts = {
+  ...baseCookieOpts,
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+};
+
 const shortLivedCookieOpts = {
-  httpOnly: true,
-  secure: true,
-  sameSite: "none" as const,
+  ...baseCookieOpts,
   maxAge: 15 * 60 * 1000, // 15 minutes
-  path: "/",
 };
 
 // SIGN UP

@@ -33,16 +33,9 @@ app.set('trust proxy', 1);
 
 // 2) “Reflect” every origin, allow credentials, all methods & headers
 app.use(cors({
-  origin: (origin, callback) => {
-    // echo back whatever origin the browser sent (or `undefined` for curl/postman)
-    callback(null, origin);
-  },
   credentials: true,                    // <-- allow Set-Cookie & Cookie headers
   methods: ['GET','HEAD','PUT','PATCH','POST','DELETE','OPTIONS'],  
-  allowedHeaders: ['*'],                // <-- allow any request header
   preflightContinue: false,             // let cors() send the 204
-  optionsSuccessStatus: 204,            // some legacy browsers choke on 204
-  maxAge: 86400                         // cache preflight for 24 hours
 }));
 
 app.use(express.json({
