@@ -26,25 +26,24 @@ connectDB();
 
 const app: Express = express();
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:3000",
-  "https://finalproject-frontend-3xzr.onrender.com",
-];
-
 // Middleware
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl)
-      if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      return callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-  })
-);
+// 1) Trust proxy if you’re on a hosted platform (needed for secure cookies)
+//    — remove if you don’t care about HTTPS-cookie support.
+app.set('trust proxy', 1);
+
+// 2) “Reflect” every origin, allow credentials, all methods & headers
+app.use(cors({
+  origin: (origin, callback) => {
+    // echo back whatever origin the browser sent (or `undefined` for curl/postman)
+    callback(null, origin);
+  },
+  credentials: true,                    // <-- allow Set-Cookie & Cookie headers
+  methods: ['GET','HEAD','PUT','PATCH','POST','DELETE','OPTIONS'],  
+  allowedHeaders: ['*'],                // <-- allow any request header
+  preflightContinue: false,             // let cors() send the 204
+  optionsSuccessStatus: 204,            // some legacy browsers choke on 204
+  maxAge: 86400                         // cache preflight for 24 hours
+}));
 
 app.use(express.json({
   limit: '10mb'
