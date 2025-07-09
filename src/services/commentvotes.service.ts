@@ -26,12 +26,37 @@ export const voteCommentService = async (
   const user = await getOneUserService(comment.userId.toString());
 
   if (existingVote) {
-    // If vote is same, block
+    // --- CLICK SAME VOTE AGAIN: REMOVE IT ---
     if (existingVote.vote === vote) {
-      throw new AppError("Already voted with same value", BAD_REQUEST);
+      // delete the vote doc
+      await CommentVoteCollection.deleteOne({ userId, commentId });
+
+      // adjust counters & score
+      if (vote === 1) {
+        await updateUserScoreService(comment.userId.toString(), {
+          score: Number(user?.score) - 1,
+        });
+        await updateCommentVoteService(commentId, {
+          totalUpvotes: comment.totalUpvotes - 1,
+        });
+      } else {
+        await updateUserScoreService(comment.userId.toString(), {
+          score: Number(user?.score) + 1,
+        });
+        await updateCommentVoteService(commentId, {
+          totalDownvotes: comment.totalDownvotes - 1,
+        });
+      }
+
+      const updatedComment = await getIcommentByIdService(commentId);
+      return {
+        vote: 0,
+        upvotes: updatedComment.totalUpvotes,
+        downvotes: updatedComment.totalDownvotes,
+      };
     }
 
-    // If changing vote, update score and vote
+    // --- SWITCH VOTE: update value + adjust by ±2/∓2 ---
     if (vote === 1) {
       await updateUserScoreService(comment.userId.toString(), {
         score: Number(user?.score) + 2,
@@ -61,8 +86,8 @@ export const voteCommentService = async (
     };
   }
 
-  // First time voting
-  const commentVote = await CommentVoteCollection.create({
+  // --- FIRST-TIME VOTE: create + adjust by ±1 ---
+  await CommentVoteCollection.create({
     commentId,
     ideaId,
     vote,
