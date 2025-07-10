@@ -17,7 +17,7 @@ export const getComments = async (req: Request, res: Response, next: NextFunctio
     });
 
   } catch (error) {
-    console.error("getAllIdeas ERROR:", error);
+    console.error("getComments ERROR:", error);
     next(error);
   }
 };
