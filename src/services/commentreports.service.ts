@@ -62,6 +62,20 @@ export const getReportedCommentsService = async () => {
       },
     },
     { $unwind: "$comment" },
+    {
+      $lookup: {
+        from: "users",
+        let: { userId: "$comment.userId" },
+        pipeline: [
+          { $match: { $expr: { $eq: ["$_id", "$$userId"] } } },
+          { $project: { password: 0 } },
+        ],
+        as: "user",
+      },
+    },
+    { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
+    { $addFields: { "comment.userId": "$user" } },
+    { $unset: "user" },
   ]);
 
   return results
