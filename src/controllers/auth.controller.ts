@@ -8,8 +8,8 @@ import { dev } from "../utils/helpers";
 // Define consistent cookie options for tokens
 const baseCookieOpts: CookieOptions = {
   httpOnly: true,
-  secure: !dev,
-  sameSite: dev ? "Lax" : "None",
+  secure: true,
+  sameSite: "None",
   path: "/",
 };
 
