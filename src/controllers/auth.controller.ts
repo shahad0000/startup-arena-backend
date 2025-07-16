@@ -9,7 +9,7 @@ import { dev } from "../utils/helpers";
 const baseCookieOpts: CookieOptions = {
   httpOnly: true,
   secure: !dev,
-  sameSite: dev ? "lax" : "none",
+  sameSite: dev ? "Lax" : "None",
   path: "/",
 };
 
