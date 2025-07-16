@@ -32,7 +32,7 @@ const app: Express = express();
 // Middleware
 app.use(
   cors({
-    origin: true,
+    origin: "https://startup-arena.onrender.com",
     credentials: true,
     optionsSuccessStatus: 200,
   })
