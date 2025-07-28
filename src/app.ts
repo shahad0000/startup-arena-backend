@@ -4,7 +4,6 @@ import helmet from "helmet";
 import morgan from "morgan";
 import dotenv from "dotenv";
 dotenv.config();
-import cookieParser from "cookie-parser";
 import logger from "./utils/logger";
 import { dev, port } from "./utils/helpers";
 import { OK, INTERNAL_SERVER_ERROR } from "./utils/http-status";
@@ -56,8 +55,6 @@ app.use(
 app.use(express.json());
 // Parses URL-encoded data
 app.use(express.urlencoded({ extended: true }));
-// Parses cookies attached to client requests
-app.use(cookieParser());
 
 // Routes
 app.use("/api/auth", authRoutes);

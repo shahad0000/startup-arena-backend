@@ -73,7 +73,7 @@ const signIn = async (
   return { user, accessToken, refreshToken };
 };
 
-// Accepts a refreshToken, from cookies or request body
+// Accepts a refreshToken provided in the request body
 const refreshToken = async (
   token: string
 ): Promise<{
