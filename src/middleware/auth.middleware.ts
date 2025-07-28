@@ -13,16 +13,12 @@ export interface AuthRequest extends Request {
 // checks if the user has a valid access token
 export const authorized = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-
-    // 1) Get token from header
+    // 1) Get token from Authorization header
     const authHeader = req.headers.authorization;
     let token: string | undefined;
 
-    // Tries to retrieve the token from either the Authorization header (standard "Bearer <token>") or cookies (accessToken cookie)
     if (authHeader && authHeader.startsWith("Bearer ")) {
       token = authHeader.split(" ")[1];
-    } else if (req.cookies?.accessToken) {
-      token = req.cookies.accessToken;
     }
 
     // Throws a 401 error if no token is found
