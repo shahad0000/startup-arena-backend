@@ -8,6 +8,7 @@ import {
   ideaAnalatics,
   updateIdeaById,
 } from "../controllers/ideas.controller";
+import { summarizeIdeaController } from "../controllers/summarizer.controller";
 import { getUserVoteController } from "../controllers/votes.controller";
 import {postVote, getVotes} from "../controllers/votes.controller";
 
@@ -17,6 +18,7 @@ const router = Router();
 router.get("/", getAllIdeas);
 router.get("/:id", getIdeaById);
 router.get("/analytics/:id", ideaAnalatics); // get idea analytics
+router.get("/:id/summary", summarizeIdeaController);
 
 // Authorized routes
 router.post("/", authorized, createIdea);

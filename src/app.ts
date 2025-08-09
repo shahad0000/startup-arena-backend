@@ -5,7 +5,7 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 dotenv.config();
 import logger from "./utils/logger";
-import { dev, port } from "./utils/helpers";
+import { dev } from "./utils/helpers";
 import { OK, INTERNAL_SERVER_ERROR } from "./utils/http-status";
 import { connectDB, deleteAllCollections } from "./config/db";
 import { AppError } from "./utils/error";
@@ -15,9 +15,8 @@ import usersRoutes from "./routes/users.routes";
 import zoomRoutes from "./routes/zoom.routes";
 import adminRoutes from "./routes/admin.routes";
 import commentsRoutes from "./routes/comments.routes";
-import ventureBoardRoutes from "./routes/venture-board.routes"
+import ventureBoardRoutes from "./routes/venture-board.routes";
 import { startZoomToYouTubeScheduler } from "./jobs/uploadScheduler";
-
 startZoomToYouTubeScheduler();
 
 // // Delete all collections
@@ -39,9 +38,11 @@ app.use(
   })
 );
 
-app.use(express.json({
-  limit: '10mb'
-}));
+app.use(
+  express.json({
+    limit: "10mb",
+  })
+);
 
 // Adds security-related HTTP headers using Helmet
 app.use(helmet());
@@ -58,7 +59,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use('/api/zoom', zoomRoutes);
+app.use("/api/zoom", zoomRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/ideas", ideasRoutes);
 app.use("/api/users", usersRoutes);
