@@ -33,6 +33,7 @@ app.set("trust proxy", 1);
 app.use(
   cors({
     origin: "https://startup-arena.onrender.com",
+    // origin: "http://localhost:5173",
     credentials: true,
     optionsSuccessStatus: 200,
   })

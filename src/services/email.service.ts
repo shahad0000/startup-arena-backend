@@ -1,5 +1,5 @@
 import { sendMeetingEmail } from "../utils/mailer";
-import schedule from "node-schedule";
+import axios from "axios";
 
 interface MeetingEmailParams {
   sender_role: "founder" | "investor";
@@ -31,21 +31,14 @@ export const handleMeetingEmails = async ({
   duration,
 }: MeetingEmailParams) => {
   const formattedTime = formatTime(start_time);
+  console.log("Meeting start_time:", start_time);
+  console.log("Meeting formattedTime:", formattedTime);
 
   const basicDetails = `
     <p><strong>Topic:</strong> ${topic}</p>
     <p><strong>Date & Time:</strong> ${formattedTime}</p>
     <p><strong>Duration:</strong> ${duration} minutes</p>
   `;
-
-  const linkDetails = `
-  ${basicDetails}
-  <p>
-    We're excited to have you join this important session.<br />
-    Please <a href="${join_url}">click here to join the meeting</a> at the scheduled time.
-  </p>
-  <p>Thank you for being part of Startup Arena — where ideas meet opportunity!</p>
-`;
 
   const senderSubject =
     sender_role === "founder"
@@ -57,16 +50,17 @@ export const handleMeetingEmails = async ({
       ? "Startup Arena – Invitation to review a pitch"
       : "Startup Arena – An investor wants to meet you";
 
+  // Immediate confirmation emails 
   await sendMeetingEmail(
     sender_email,
     senderSubject,
     `
       <p>Hi ${sender_name},</p>
-    <p>Your upcoming meeting has been scheduled. Here are the details:</p>
-    ${basicDetails}
-    <p>You will receive the join link right before the meeting starts.</p>
-    <p>Best regards,<br/>The Startup Arena Team</p>
-  `
+      <p>Your upcoming meeting has been scheduled. Here are the details:</p>
+      ${basicDetails}
+      <p>You will receive the join link right before the meeting starts.</p>
+      <p>Best regards,<br/>The Startup Arena Team</p>
+    `
   );
 
   await sendMeetingEmail(
@@ -75,24 +69,29 @@ export const handleMeetingEmails = async ({
     `
       <p>Hi,</p>
       <p><strong>${sender_name}</strong> has invited you to an important meeting. Here are the details:</p>
-    ${basicDetails}
-    <p>The join link will be sent to you shortly before the meeting begins.</p>
-    <p>Looking forward to connecting you soon!<br/>The Startup Arena Team</p>
-  `
+      ${basicDetails}
+      <p>The join link will be sent to you shortly before the meeting begins.</p>
+      <p>Looking forward to connecting you soon!<br/>The Startup Arena Team</p>
+    `
   );
 
-  const whenToSend = new Date(start_time);
-
-  schedule.scheduleJob(whenToSend, async () => {
-    await sendMeetingEmail(
+  // Trigger n8n workflow for calendar + reminders
+  try {
+    const fullISOStartTime = new Date(start_time).toISOString();
+    console.log("Meeting fullISOStartTime:", fullISOStartTime);
+    await axios.post("https://flow-lab.app.n8n.cloud/webhook/meeting-schedule", {
+      sender_role,
+      sender_name,
       sender_email,
-      senderSubject + " – Join Now",
-      linkDetails
-    );
-    await sendMeetingEmail(
       recipient_email,
-      recipientSubject + " – Join Now",
-      linkDetails
-    );
-  });
+      topic,
+      join_url,      
+      start_time: fullISOStartTime,
+      duration,
+    });
+    
+  } catch (error) {
+    console.error("Failed to trigger n8n workflow", error);
+  }
 };
+
