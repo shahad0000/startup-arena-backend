@@ -111,8 +111,6 @@ export const deleteIdeaById = async (
   }
 };
 
-
-
 export const ideaAnalatics = async (
   req: Request,
   res: Response,

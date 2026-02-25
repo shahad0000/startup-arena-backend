@@ -10,6 +10,7 @@
     "format": "prettier --write \"src/**/*.ts\""
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/mongoose": "^5.11.96",
     "axios": "^1.10.0",

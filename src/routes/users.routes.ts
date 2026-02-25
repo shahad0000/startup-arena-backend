@@ -1,5 +1,5 @@
 import express from "express";
-import { getAllUsers, getOneUser, getMe, getMyIdeas, updateProfile } from "../controllers/users.controller";
+import { getOneUser, getMe, getMyIdeas, updateProfile } from "../controllers/users.controller";
 import { authorized } from "../middleware/auth.middleware";
 
 
